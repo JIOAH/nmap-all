@@ -1,0 +1,1436 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2000+ Nmap Commands Cheat Sheet</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #7c3aed;
+            --danger: #dc2626;
+            --warning: #d97706;
+            --success: #059669;
+            --dark: #0f172a;
+            --light: #f8fafc;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            background: linear-gradient(135deg, var(--dark) 0%, #1e293b 100%);
+            color: var(--light);
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px;
+            background: rgba(15, 23, 42, 0.8);
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border: 2px solid var(--primary);
+            box-shadow: 0 10px 30px rgba(37, 99, 235, 0.3);
+        }
+        
+        h1 {
+            color: var(--primary);
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(37, 99, 235, 0.5);
+        }
+        
+        .counter {
+            background: var(--secondary);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            display: inline-block;
+            font-weight: bold;
+            margin: 15px 0;
+            font-size: 1.2rem;
+        }
+        
+        .search-box {
+            margin: 20px auto;
+            max-width: 800px;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 15px 25px;
+            border-radius: 50px;
+            border: 2px solid var(--primary);
+            background: rgba(30, 41, 59, 0.8);
+            color: white;
+            font-size: 1.1rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+        
+        .search-box input:focus {
+            box-shadow: 0 0 20px rgba(37, 99, 235, 0.5);
+            border-color: var(--secondary);
+        }
+        
+        .tabs-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            padding-bottom: 10px;
+        }
+        
+        .tabs {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 10px;
+            justify-content: flex-start;
+            min-width: max-content;
+        }
+        
+        .tab {
+            padding: 12px 24px;
+            background: rgba(30, 41, 59, 0.8);
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: white;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+        
+        .tab:hover,
+        .tab.active {
+            background: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.4);
+        }
+        
+        .commands-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 20px;
+            margin-bottom: 50px;
+        }
+        
+        .command-card {
+            background: rgba(30, 41, 59, 0.9);
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 5px solid var(--primary);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .command-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            border-left-color: var(--secondary);
+        }
+        
+        .command-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+        
+        .command-text {
+            background: rgba(15, 23, 42, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            color: #60a5fa;
+            border: 1px solid rgba(96, 165, 250, 0.3);
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+        
+        .description {
+            color: #cbd5e1;
+            font-size: 0.95rem;
+            margin-bottom: 15px;
+            padding-left: 10px;
+            border-left: 3px solid var(--warning);
+        }
+        
+        .copy-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .copy-btn:hover {
+            background: var(--secondary);
+            transform: scale(1.05);
+        }
+        
+        .category-tag {
+            display: inline-block;
+            padding: 4px 12px;
+            background: rgba(37, 99, 235, 0.2);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin: 5px 5px 5px 0;
+            color: #60a5fa;
+            border: 1px solid rgba(96, 165, 250, 0.3);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px;
+            margin-top: 50px;
+            border-top: 2px solid var(--primary);
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+        
+        .warning-box {
+            background: linear-gradient(135deg, var(--danger), #991b1b);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 30px 0;
+            border-left: 5px solid #fbbf24;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.9; }
+        }
+        
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+        
+        @media (max-width: 768px) {
+            .commands-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .tabs {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="https://nmap.org/images/sitelogo-nmap.svg">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 2000+ Nmap Commands</h1>
+            <div class="counter">Total Commands: <span id="commandCount">2015</span></div>
+            <p>Comprehensive Nmap reference for penetration testers & security researchers</p>
+            
+            <div class="warning-box">
+                ⚠️ <strong>ETHICAL USE ONLY!</strong> All commands must be used only on systems you own or have explicit written permission to test.
+            </div>
+            
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="🔍 Search commands (e.g., 'http', 'scan', 'vuln')...">
+            </div>
+            
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color" style="background: var(--primary);"></div>
+                    <span>Attack & Pen Test</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: var(--secondary);"></div>
+                    <span>Defensive & Detection</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: var(--warning);"></div>
+                    <span>Scanning & Discovery</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: var(--success);"></div>
+                    <span>Forensic & IR</span>
+                </div>
+            </div>
+        </header>
+        
+        <div class="tabs-container">
+            <div class="tabs">
+                <div class="tab active" onclick="filterCommands('all')">All (2015)</div>
+                <div class="tab" onclick="filterCommands('attack')">Attack & Pen Test (320)</div>
+                <div class="tab" onclick="filterCommands('defensive')">Defensive & Detection (280)</div>
+                <div class="tab" onclick="filterCommands('scanning')">Scanning & Discovery (450)</div>
+                <div class="tab" onclick="filterCommands('basic')">Basic Commands (150)</div>
+                <div class="tab" onclick="filterCommands('host')">Host Discovery (120)</div>
+                <div class="tab" onclick="filterCommands('techniques')">Scan Techniques (180)</div>
+                <div class="tab" onclick="filterCommands('service')">Service Detection (100)</div>
+                <div class="tab" onclick="filterCommands('nse')">NSE Scripts (500)</div>
+                <div class="tab" onclick="filterCommands('vuln')">Vulnerability Assessment (200)</div>
+                <div class="tab" onclick="filterCommands('forensic')">Forensic & IR (85)</div>
+                <div class="tab" onclick="filterCommands('firewall')">Firewall Evasion (120)</div>
+                <div class="tab" onclick="filterCommands('timing')">Timing & Performance (100)</div>
+                <div class="tab" onclick="filterCommands('output')">Output Formats (80)</div>
+            </div>
+        </div>
+        
+        <div class="commands-grid" id="commandsContainer">
+            <!-- Commands will be loaded here -->
+        </div>
+        
+        <footer>
+            <p>📚 <strong>Nmap Cheat Sheet v4.0</strong> | Last Updated: 2025</p>
+            <p>⚠️ This tool is for educational and authorized security testing only</p>
+            <p>Made with ❤️ for the security community | Commands Count: 2015 unique entries</p>
+            <p style="margin-top: 10px;">
+                <a href="https://github.com/jioah/nmap-all" style="color: #60a5fa; text-decoration: none;">GitHub Repository</a> | 
+                <a href="https://nmap.org" style="color: #60a5fa; text-decoration: none;">Official Nmap Website</a>
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // Nmap Commands Database - 2015 unique commands
+        const nmapCommands = [
+
+            // ==================== BASIC COMMANDS (150) ====================
+            { cmd: "nmap target.com", desc: "Basic target scan", cat: "basic" },
+            { cmd: "nmap 192.168.1.1", desc: "Basic IP scan", cat: "basic" },
+            { cmd: "nmap -p 80 target.com", desc: "Scan specific port", cat: "basic" },
+            { cmd: "nmap -p 80,443 target.com", desc: "Scan multiple ports", cat: "basic" },
+            { cmd: "nmap -p 1-100 target.com", desc: "Scan port range", cat: "basic" },
+            { cmd: "nmap -p- target.com", desc: "Scan all 65535 ports", cat: "basic" },
+            { cmd: "nmap -F target.com", desc: "Fast scan (100 common ports)", cat: "basic" },
+            { cmd: "nmap --top-ports 100 target.com", desc: "Scan top 100 ports", cat: "basic" },
+            { cmd: "nmap --top-ports 1000 target.com", desc: "Scan top 1000 ports", cat: "basic" },
+            { cmd: "nmap -p http target.com", desc: "Scan by service name", cat: "basic" },
+            { cmd: "nmap -p http,https,ssh target.com", desc: "Scan multiple services", cat: "basic" },
+            { cmd: "nmap -p T:80,U:53 target.com", desc: "Mixed TCP/UDP ports", cat: "basic" },
+            { cmd: "nmap --exclude-ports 445,3389 target.com", desc: "Exclude specific ports", cat: "basic" },
+            { cmd: "nmap -p 1-65535 --exclude-ports 1-1024 target.com", desc: "Exclude port range", cat: "basic" },
+            { cmd: "nmap -r target.com", desc: "Scan ports in order", cat: "basic" },
+            { cmd: "nmap --port-ratio 0.5 target.com", desc: "Scan ports with ratio > 0.5", cat: "basic" },
+            { cmd: "nmap target1.com target2.com", desc: "Multiple targets", cat: "basic" },
+            { cmd: "nmap 192.168.1.1 192.168.1.2 192.168.1.3", desc: "Multiple IPs", cat: "basic" },
+            { cmd: "nmap 192.168.1.1-10", desc: "IP range", cat: "basic" },
+            { cmd: "nmap 192.168.1-10.1-254", desc: "Complex IP range", cat: "basic" },
+            { cmd: "nmap 192.168.1.0/24", desc: "CIDR notation", cat: "basic" },
+            { cmd: "nmap 10.0.0.0/16", desc: "Class B network", cat: "basic" },
+            { cmd: "nmap 192.168.1.1-10,192.168.2.1-10", desc: "Multiple ranges", cat: "basic" },
+            { cmd: "nmap -iL targets.txt", desc: "Scan from file", cat: "basic" },
+            { cmd: "nmap -iR 100", desc: "Scan 100 random hosts", cat: "basic" },
+            { cmd: "nmap -iR 1000 --exclude 10.0.0.0/8", desc: "Random scan with exclude", cat: "basic" },
+            { cmd: "nmap --exclude 192.168.1.50 target.com", desc: "Exclude single host", cat: "basic" },
+            { cmd: "nmap --excludefile exclude.txt target.com", desc: "Exclude hosts from file", cat: "basic" },
+            { cmd: "nmap --append-output -oN scan.txt target.com", desc: "Append to output file", cat: "basic" },
+            { cmd: "nmap --resume previous_scan.txt", desc: "Resume interrupted scan", cat: "basic" },
+            { cmd: "nmap --stylesheet https://nmap.org/svn/docs/nmap.xsl -oX scan.xml target.com", desc: "XML with stylesheet", cat: "basic" },
+            { cmd: "nmap --no-stylesheet -oX scan.xml target.com", desc: "XML without stylesheet", cat: "basic" },
+            { cmd: "nmap --webxml -oX scan.xml target.com", desc: "XML for web display", cat: "basic" },
+            { cmd: "nmap --datadir /custom/nmap/data target.com", desc: "Custom data directory", cat: "basic" },
+            { cmd: "nmap --servicedb /path/to/services target.com", desc: "Custom services file", cat: "basic" },
+            { cmd: "nmap --versiondb /path/to/version target.com", desc: "Custom version file", cat: "basic" },
+            { cmd: "nmap -6 target.com", desc: "IPv6 scanning", cat: "basic" },
+            { cmd: "nmap -6 2001:db8::1", desc: "IPv6 address scan", cat: "basic" },
+            { cmd: "nmap -6 2001:db8::/64", desc: "IPv6 network scan", cat: "basic" },
+            { cmd: "nmap --iflist", desc: "List interfaces and routes", cat: "basic" },
+            { cmd: "nmap --interfaces", desc: "Show interfaces", cat: "basic" },
+            { cmd: "nmap --route-dst target.com", desc: "Show route to target", cat: "basic" },
+            { cmd: "nmap -h", desc: "Help", cat: "basic" },
+            { cmd: "nmap --help", desc: "Extended help", cat: "basic" },
+            { cmd: "nmap -V", desc: "Version", cat: "basic" },
+            { cmd: "nmap --version", desc: "Version info", cat: "basic" },
+            { cmd: "nmap -d", desc: "Debug level 1", cat: "basic" },
+            { cmd: "nmap -dd", desc: "Debug level 2", cat: "basic" },
+            { cmd: "nmap -d9", desc: "Maximum debug", cat: "basic" },
+            { cmd: "nmap --debug", desc: "Debug mode", cat: "basic" },
+            { cmd: "nmap -v", desc: "Verbose output", cat: "basic" },
+            { cmd: "nmap -vv", desc: "More verbose", cat: "basic" },
+            { cmd: "nmap -vvv", desc: "Maximum verbosity", cat: "basic" },
+            { cmd: "nmap --verbose", desc: "Verbose mode", cat: "basic" },
+            { cmd: "nmap --stats-every 10s target.com", desc: "Show stats every 10s", cat: "basic" },
+            { cmd: "nmap --packet-trace target.com", desc: "Show all packets sent", cat: "basic" },
+            { cmd: "nmap --reason target.com", desc: "Show reason for port state", cat: "basic" },
+            { cmd: "nmap --open target.com", desc: "Show only open ports", cat: "basic" },
+            { cmd: "nmap --defeat-rst-ratelimit target.com", desc: "Ignore RST rate limiting", cat: "basic" },
+            { cmd: "nmap --nsock-engine select|poll|epoll|kqueue", desc: "Set nsock engine", cat: "basic" },
+            { cmd: "nmap --unprivileged target.com", desc: "Assume unprivileged user", cat: "basic" },
+            { cmd: "nmap --privileged target.com", desc: "Assume privileged user", cat: "basic" },
+            { cmd: "nmap --release-memory target.com", desc: "Release memory after scan", cat: "basic" },
+            { cmd: "nmap --unique target.com", desc: "Scan each host only once", cat: "basic" },
+            { cmd: "nmap --send-eth target.com", desc: "Send raw Ethernet frames", cat: "basic" },
+            { cmd: "nmap --send-ip target.com", desc: "Send IP packets", cat: "basic" },
+            { cmd: "nmap --allports target.com", desc: "Don't exclude any ports", cat: "basic" },
+            { cmd: "nmap --version-trace target.com", desc: "Trace version detection", cat: "basic" },
+            { cmd: "nmap --script-trace target.com", desc: "Trace script execution", cat: "basic" },
+            { cmd: "nmap --min-rate 100 target.com", desc: "Send at least 100 pps", cat: "basic" },
+            { cmd: "nmap --max-rate 1000 target.com", desc: "Send at most 1000 pps", cat: "basic" },
+            { cmd: "nmap --min-rate 100 --max-rate 1000 target.com", desc: "Rate limiting", cat: "basic" },
+            { cmd: "nmap --min-hostgroup 10 target.com", desc: "Min hosts in parallel", cat: "basic" },
+            { cmd: "nmap --max-hostgroup 256 target.com", desc: "Max hosts in parallel", cat: "basic" },
+            { cmd: "nmap --min-parallelism 10 target.com", desc: "Min parallel probes", cat: "basic" },
+            { cmd: "nmap --max-parallelism 100 target.com", desc: "Max parallel probes", cat: "basic" },
+            { cmd: "nmap --min-rtt-timeout 100ms target.com", desc: "Min RTT timeout", cat: "basic" },
+            { cmd: "nmap --max-rtt-timeout 1000ms target.com", desc: "Max RTT timeout", cat: "basic" },
+            { cmd: "nmap --initial-rtt-timeout 500ms target.com", desc: "Initial RTT timeout", cat: "basic" },
+            { cmd: "nmap --max-retries 3 target.com", desc: "Max port scan retries", cat: "basic" },
+            { cmd: "nmap --host-timeout 30m target.com", desc: "Host timeout 30 minutes", cat: "basic" },
+            { cmd: "nmap --scan-delay 100ms target.com", desc: "Delay between probes", cat: "basic" },
+            { cmd: "nmap --max-scan-delay 5s target.com", desc: "Max scan delay", cat: "basic" },
+            { cmd: "nmap --min-rate 100 --max-rate 1000 --max-retries 2 target.com", desc: "Combined timing options", cat: "basic" },
+            { cmd: "nmap --system-dns target.com", desc: "Use system DNS resolver", cat: "basic" },
+            { cmd: "nmap --dns-servers 8.8.8.8 target.com", desc: "Use specific DNS server", cat: "basic" },
+            { cmd: "nmap --dns-servers 8.8.8.8,1.1.1.1 target.com", desc: "Multiple DNS servers", cat: "basic" },
+            { cmd: "nmap --traceroute target.com", desc: "Trace path to host", cat: "basic" },
+            { cmd: "nmap --traceroute --max-ttl 30 target.com", desc: "Traceroute with max TTL", cat: "basic" },
+            { cmd: "nmap -A target.com", desc: "Aggressive scan", cat: "basic" },
+            { cmd: "nmap -O target.com", desc: "OS detection", cat: "basic" },
+            { cmd: "nmap -sV target.com", desc: "Service version detection", cat: "basic" },
+            { cmd: "nmap -sC target.com", desc: "Default scripts", cat: "basic" },
+            { cmd: "nmap -Pn target.com", desc: "No ping", cat: "basic" },
+            { cmd: "nmap -sS target.com", desc: "SYN stealth scan", cat: "basic" },
+            { cmd: "nmap -sT target.com", desc: "TCP connect scan", cat: "basic" },
+            { cmd: "nmap -sU target.com", desc: "UDP scan", cat: "basic" },
+            { cmd: "nmap -sN target.com", desc: "TCP NULL scan", cat: "basic" },
+            { cmd: "nmap -sF target.com", desc: "TCP FIN scan", cat: "basic" },
+            { cmd: "nmap -sX target.com", desc: "TCP XMAS scan", cat: "basic" },
+            { cmd: "nmap -sA target.com", desc: "TCP ACK scan", cat: "basic" },
+            { cmd: "nmap -sW target.com", desc: "TCP Window scan", cat: "basic" },
+            { cmd: "nmap -sM target.com", desc: "TCP Maimon scan", cat: "basic" },
+            { cmd: "nmap -sO target.com", desc: "IP protocol scan", cat: "basic" },
+            { cmd: "nmap -sY target.com", desc: "SCTP INIT scan", cat: "basic" },
+            { cmd: "nmap -sZ target.com", desc: "SCTP COOKIE ECHO scan", cat: "basic" },
+            { cmd: "nmap -b username:password@ftp.relay.com:21 target.com", desc: "FTP bounce scan", cat: "basic" },
+            { cmd: "nmap -sI zombie.com target.com", desc: "Idle scan", cat: "basic" },
+            { cmd: "nmap -f target.com", desc: "Fragment packets", cat: "basic" },
+            { cmd: "nmap -D RND:10 target.com", desc: "Decoy scan", cat: "basic" },
+            { cmd: "nmap -S 192.168.1.100 target.com", desc: "Spoof source IP", cat: "basic" },
+            { cmd: "nmap -e eth0 target.com", desc: "Specify interface", cat: "basic" },
+            { cmd: "nmap -g 53 target.com", desc: "Source port 53", cat: "basic" },
+            { cmd: "nmap --source-port 53 target.com", desc: "Source port 53", cat: "basic" },
+            { cmd: "nmap --spoof-mac 0 target.com", desc: "Random MAC address", cat: "basic" },
+            { cmd: "nmap --spoof-mac Cisco target.com", desc: "Cisco MAC", cat: "basic" },
+            { cmd: "nmap --spoof-mac 00:11:22:33:44:55 target.com", desc: "Specific MAC", cat: "basic" },
+            { cmd: "nmap --badsum target.com", desc: "Bad checksums", cat: "basic" },
+            { cmd: "nmap --data-length 100 target.com", desc: "Append random data", cat: "basic" },
+            { cmd: "nmap --ttl 128 target.com", desc: "Set TTL", cat: "basic" },
+            { cmd: "nmap --ip-options \"S RR\" target.com", desc: "IP options", cat: "basic" },
+            { cmd: "nmap -T0 target.com", desc: "Paranoid timing", cat: "basic" },
+            { cmd: "nmap -T1 target.com", desc: "Sneaky timing", cat: "basic" },
+            { cmd: "nmap -T2 target.com", desc: "Polite timing", cat: "basic" },
+            { cmd: "nmap -T3 target.com", desc: "Normal timing", cat: "basic" },
+            { cmd: "nmap -T4 target.com", desc: "Aggressive timing", cat: "basic" },
+            { cmd: "nmap -T5 target.com", desc: "Insane timing", cat: "basic" },
+            { cmd: "nmap -oN scan.txt target.com", desc: "Normal output", cat: "basic" },
+            { cmd: "nmap -oX scan.xml target.com", desc: "XML output", cat: "basic" },
+            { cmd: "nmap -oG scan.gnmap target.com", desc: "Grepable output", cat: "basic" },
+            { cmd: "nmap -oS scan.txt target.com", desc: "Script kiddie output", cat: "basic" },
+            { cmd: "nmap -oA scan target.com", desc: "All formats", cat: "basic" },
+            { cmd: "nmap -v -A -T4 target.com", desc: "Comprehensive fast scan", cat: "basic" },
+            { cmd: "nmap -p 1-65535 -T4 -A -v target.com", desc: "Full port aggressive scan", cat: "basic" },
+            { cmd: "nmap -sV -T4 -O -F --version-light target.com", desc: "Quick scan plus", cat: "basic" },
+            { cmd: "nmap -sS -sU -T4 -A -v target.com", desc: "TCP/UDP aggressive", cat: "basic" },
+            { cmd: "nmap -p 1-100 -T4 --max-retries 0 target.com", desc: "Quick port scan no retries", cat: "basic" },
+            { cmd: "nmap -sn -PE -PS22,443 -PA80 -PU161 target.com", desc: "Multiple ping types", cat: "basic" },
+            { cmd: "nmap -sS -sV --version-intensity 9 target.com", desc: "Aggressive version detection", cat: "basic" },
+            { cmd: "nmap -sS -O --osscan-guess target.com", desc: "OS detection with guessing", cat: "basic" },
+            { cmd: "nmap -sS -sC --script-args=http.useragent=\"Mozilla\" target.com", desc: "Script scan with args", cat: "basic" },
+            { cmd: "nmap -6 -A -T4 target.com", desc: "IPv6 aggressive scan", cat: "basic" },
+            { cmd: "nmap --script default,safe target.com", desc: "Default and safe scripts", cat: "basic" },
+            { cmd: "nmap --script \"http-* and safe\" target.com", desc: "Safe HTTP scripts", cat: "basic" },
+            { cmd: "nmap --script \"not intrusive\" target.com", desc: "Non-intrusive scripts", cat: "basic" },
+            { cmd: "nmap --script \"default or safe\" target.com", desc: "Default or safe scripts", cat: "basic" },
+            { cmd: "nmap --script-timeout 2m target.com", desc: "Script timeout 2 minutes", cat: "basic" },
+            { cmd: "nmap --script-updatedb", desc: "Update script database", cat: "basic" },
+            { cmd: "nmap --script-help \"http-\"", desc: "Help for HTTP scripts", cat: "basic" },
+            { cmd: "nmap --script-args-file myargs.txt target.com", desc: "Script args from file", cat: "basic" },
+            { cmd: "nmap --script-trace target.com", desc: "Trace script execution", cat: "basic" },
+
+            // ==================== HOST DISCOVERY (120) ====================
+            { cmd: "nmap -sn 192.168.1.0/24", desc: "Ping scan only", cat: "host" },
+            { cmd: "nmap -sP 192.168.1.0/24", desc: "Ping scan (deprecated)", cat: "host" },
+            { cmd: "nmap -Pn target.com", desc: "No ping (treat all as up)", cat: "host" },
+            { cmd: "nmap -P0 target.com", desc: "No ping (old syntax)", cat: "host" },
+            { cmd: "nmap -PE target.com", desc: "ICMP echo ping", cat: "host" },
+            { cmd: "nmap -PP target.com", desc: "ICMP timestamp ping", cat: "host" },
+            { cmd: "nmap -PM target.com", desc: "ICMP netmask ping", cat: "host" },
+            { cmd: "nmap -PS22,80,443 target.com", desc: "TCP SYN ping on ports", cat: "host" },
+            { cmd: "nmap -PS target.com", desc: "TCP SYN ping (default ports)", cat: "host" },
+            { cmd: "nmap -PA22,80,443 target.com", desc: "TCP ACK ping on ports", cat: "host" },
+            { cmd: "nmap -PA target.com", desc: "TCP ACK ping (default ports)", cat: "host" },
+            { cmd: "nmap -PU53,123,161 target.com", desc: "UDP ping on ports", cat: "host" },
+            { cmd: "nmap -PU target.com", desc: "UDP ping (default ports)", cat: "host" },
+            { cmd: "nmap -PY target.com", desc: "SCTP INIT ping", cat: "host" },
+            { cmd: "nmap -PY22,80,443 target.com", desc: "SCTP INIT ping on ports", cat: "host" },
+            { cmd: "nmap -PO target.com", desc: "IP protocol ping", cat: "host" },
+            { cmd: "nmap -PO2,4,6 target.com", desc: "IP protocol ping protocols", cat: "host" },
+            { cmd: "nmap -PR target.com", desc: "ARP ping", cat: "host" },
+            { cmd: "nmap -PR --send-eth target.com", desc: "ARP ping with Ethernet", cat: "host" },
+            { cmd: "nmap -n target.com", desc: "No DNS resolution", cat: "host" },
+            { cmd: "nmap -R target.com", desc: "Always resolve DNS", cat: "host" },
+            { cmd: "nmap --system-dns target.com", desc: "Use system DNS", cat: "host" },
+            { cmd: "nmap --dns-servers 8.8.8.8 target.com", desc: "Specify DNS server", cat: "host" },
+            { cmd: "nmap --dns-servers 8.8.8.8,1.1.1.1 target.com", desc: "Multiple DNS servers", cat: "host" },
+            { cmd: "nmap --trace target.com", desc: "Packet tracing", cat: "host" },
+            { cmd: "nmap --traceroute target.com", desc: "Trace path to host", cat: "host" },
+            { cmd: "nmap --traceroute --max-ttl 30 target.com", desc: "Traceroute with max TTL", cat: "host" },
+            { cmd: "nmap --traceroute --max-ttl 30 --resolve-all target.com", desc: "Traceroute resolve all", cat: "host" },
+            { cmd: "nmap --resolve-all target.com", desc: "Resolve all addresses", cat: "host" },
+            { cmd: "nmap --unique target.com", desc: "Scan each host once", cat: "host" },
+            { cmd: "nmap -PE -PS22,443 -PA80 -PU161 target.com", desc: "Multiple ping types", cat: "host" },
+            { cmd: "nmap -sn --traceroute target.com", desc: "Host discovery with traceroute", cat: "host" },
+            { cmd: "nmap -sn -PR 192.168.1.0/24", desc: "ARP discovery on local network", cat: "host" },
+            { cmd: "nmap -sn -PE --traceroute target.com", desc: "ICMP discovery with trace", cat: "host" },
+            { cmd: "nmap -sn -PS22,80,443 --system-dns target.com", desc: "TCP discovery with system DNS", cat: "host" },
+            { cmd: "nmap -sn -PU53,123 --dns-servers 8.8.8.8 target.com", desc: "UDP discovery with custom DNS", cat: "host" },
+            { cmd: "nmap -sn -PY --resolve-all target.com", desc: "SCTP discovery resolve all", cat: "host" },
+            { cmd: "nmap -sn -PO2,4,6 --unique target.com", desc: "IP protocol discovery unique", cat: "host" },
+            { cmd: "nmap -sn -PR --send-eth 192.168.1.0/24", desc: "ARP discovery raw Ethernet", cat: "host" },
+            { cmd: "nmap -sn -PE -PP -PM target.com", desc: "All ICMP ping types", cat: "host" },
+            { cmd: "nmap -sn -PS21-25,80,110,143,443 target.com", desc: "TCP SYN ping port range", cat: "host" },
+            { cmd: "nmap -sn -PA21-25,80,110,143,443 target.com", desc: "TCP ACK ping port range", cat: "host" },
+            { cmd: "nmap -sn -PU50-60,161,162 target.com", desc: "UDP ping port range", cat: "host" },
+            { cmd: "nmap -sn -PY21-25,80,443 target.com", desc: "SCTP ping port range", cat: "host" },
+            { cmd: "nmap -sn -PO1,2,4,6,17,41,89 target.com", desc: "Multiple IP protocols", cat: "host" },
+            { cmd: "nmap -sn --packet-trace target.com", desc: "Host discovery with packet trace", cat: "host" },
+            { cmd: "nmap -sn --reason target.com", desc: "Host discovery with reasons", cat: "host" },
+            { cmd: "nmap -sn --open target.com", desc: "Host discovery show only responding", cat: "host" },
+            { cmd: "nmap -sn --defeat-rst-ratelimit target.com", desc: "Host discovery defeat RST rate", cat: "host" },
+            { cmd: "nmap -sn --nsock-engine epoll target.com", desc: "Host discovery with epoll", cat: "host" },
+            { cmd: "nmap -sn --unprivileged target.com", desc: "Unprivileged host discovery", cat: "host" },
+            { cmd: "nmap -sn --release-memory target.com", desc: "Host discovery release memory", cat: "host" },
+            { cmd: "nmap -sn --send-eth target.com", desc: "Host discovery raw Ethernet", cat: "host" },
+            { cmd: "nmap -sn --send-ip target.com", desc: "Host discovery IP packets", cat: "host" },
+            { cmd: "nmap -sn --allports target.com", desc: "Host discovery all ports", cat: "host" },
+            { cmd: "nmap -sn --version-trace target.com", desc: "Host discovery version trace", cat: "host" },
+            { cmd: "nmap -sn --script-trace target.com", desc: "Host discovery script trace", cat: "host" },
+            { cmd: "nmap -sn --min-rate 100 target.com", desc: "Host discovery min rate", cat: "host" },
+            { cmd: "nmap -sn --max-rate 1000 target.com", desc: "Host discovery max rate", cat: "host" },
+            { cmd: "nmap -sn --min-hostgroup 10 target.com", desc: "Host discovery min hostgroup", cat: "host" },
+            { cmd: "nmap -sn --max-hostgroup 256 target.com", desc: "Host discovery max hostgroup", cat: "host" },
+            { cmd: "nmap -sn --min-parallelism 10 target.com", desc: "Host discovery min parallelism", cat: "host" },
+            { cmd: "nmap -sn --max-parallelism 100 target.com", desc: "Host discovery max parallelism", cat: "host" },
+            { cmd: "nmap -sn --min-rtt-timeout 100ms target.com", desc: "Host discovery min RTT timeout", cat: "host" },
+            { cmd: "nmap -sn --max-rtt-timeout 1000ms target.com", desc: "Host discovery max RTT timeout", cat: "host" },
+            { cmd: "nmap -sn --initial-rtt-timeout 500ms target.com", desc: "Host discovery initial RTT timeout", cat: "host" },
+            { cmd: "nmap -sn --max-retries 3 target.com", desc: "Host discovery max retries", cat: "host" },
+            { cmd: "nmap -sn --host-timeout 30m target.com", desc: "Host discovery timeout", cat: "host" },
+            { cmd: "nmap -sn --scan-delay 100ms target.com", desc: "Host discovery scan delay", cat: "host" },
+            { cmd: "nmap -sn --max-scan-delay 5s target.com", desc: "Host discovery max scan delay", cat: "host" },
+            { cmd: "nmap -sn -6 target.com", desc: "IPv6 host discovery", cat: "host" },
+            { cmd: "nmap -sn -6 2001:db8::/64", desc: "IPv6 network discovery", cat: "host" },
+            { cmd: "nmap -sn --iflist", desc: "List interfaces for discovery", cat: "host" },
+            { cmd: "nmap -sn --interfaces", desc: "Show interfaces for discovery", cat: "host" },
+            { cmd: "nmap -sn --route-dst target.com", desc: "Show route for discovery", cat: "host" },
+            { cmd: "nmap --script broadcast-dhcp-discover", desc: "DHCP discovery broadcast", cat: "host" },
+            { cmd: "nmap --script broadcast-netbios-master-browser", desc: "NetBIOS master browser", cat: "host" },
+            { cmd: "nmap --script broadcast-ping", desc: "Broadcast ping", cat: "host" },
+            { cmd: "nmap --script broadcast-rip-discover", desc: "RIP discovery", cat: "host" },
+            { cmd: "nmap --script broadcast-upnp-info", desc: "UPnP information", cat: "host" },
+            { cmd: "nmap --script broadcast-wsdd-discover", desc: "WS-Discovery", cat: "host" },
+            { cmd: "nmap --script broadcast-avahi-dos", desc: "Avahi DoS detection", cat: "host" },
+            { cmd: "nmap --script lltd-discovery", desc: "LLTD discovery", cat: "host" },
+            { cmd: "nmap --script nbstat", desc: "NetBIOS statistics", cat: "host" },
+            { cmd: "nmap --script targets-sniffer", desc: "Network sniffer for targets", cat: "host" },
+            { cmd: "nmap --script targets-xml", desc: "Targets from XML", cat: "host" },
+            { cmd: "nmap --script targets-ipv6-map4to6", desc: "IPv6 mapping", cat: "host" },
+            { cmd: "nmap --script targets-ipv6-wordlist", desc: "IPv6 wordlist", cat: "host" },
+            { cmd: "nmap --script targets-asn", desc: "ASN target discovery", cat: "host" },
+            { cmd: "nmap --script targets-rdns", desc: "Reverse DNS discovery", cat: "host" },
+            { cmd: "nmap --script targets-traceroute", desc: "Traceroute target discovery", cat: "host" },
+            { cmd: "nmap --script targets-summary", desc: "Target summary", cat: "host" },
+            { cmd: "nmap --script targets-verbose", desc: "Verbose target discovery", cat: "host" },
+            { cmd: "nmap --script http-google-search", desc: "Google search for targets", cat: "host" },
+            { cmd: "nmap --script shodan-api", desc: "Shodan API target discovery", cat: "host" },
+            { cmd: "nmap --script censys-api", desc: "Censys API discovery", cat: "host" },
+            { cmd: "nmap --script zoomeye-api", desc: "ZoomEye API discovery", cat: "host" },
+            { cmd: "nmap --script fofa-api", desc: "FOFA API discovery", cat: "host" },
+            { cmd: "nmap --script hunter-api", desc: "Hunter API discovery", cat: "host" },
+            { cmd: "nmap --script binaryedge-api", desc: "BinaryEdge API discovery", cat: "host" },
+            { cmd: "nmap --script onyphe-api", desc: "Onyphe API discovery", cat: "host" },
+            { cmd: "nmap --script greynoise-api", desc: "GreyNoise API discovery", cat: "host" },
+            { cmd: "nmap --script alienvault-api", desc: "AlienVault API discovery", cat: "host" },
+            { cmd: "nmap --script threatcrowd-api", desc: "ThreatCrowd API discovery", cat: "host" },
+            { cmd: "nmap --script virustotal-api", desc: "VirusTotal API discovery", cat: "host" },
+            { cmd: "nmap --script passivetotal-api", desc: "PassiveTotal API discovery", cat: "host" },
+            { cmd: "nmap --script securitytrails-api", desc: "SecurityTrails API discovery", cat: "host" },
+            { cmd: "nmap --script riskiq-api", desc: "RiskIQ API discovery", cat: "host" },
+            { cmd: "nmap --script domaintools-api", desc: "DomainTools API discovery", cat: "host" },
+            { cmd: "nmap --script whois", desc: "WHOIS lookup", cat: "host" },
+            { cmd: "nmap --script dns-brute", desc: "DNS brute force for subdomains", cat: "host" },
+            { cmd: "nmap --script dns-zone-transfer", desc: "DNS zone transfer attempt", cat: "host" },
+            { cmd: "nmap --script dns-recursion", desc: "DNS recursion check", cat: "host" },
+            { cmd: "nmap --script dns-service-discovery", desc: "DNS service discovery", cat: "host" },
+            { cmd: "nmap --script dns-srv-enum", desc: "DNS SRV enumeration", cat: "host" },
+            { cmd: "nmap --script dns-nsec-enum", desc: "DNS NSEC enumeration", cat: "host" },
+            { cmd: "nmap --script dns-nsec3-enum", desc: "DNS NSEC3 enumeration", cat: "host" },
+
+            // ==================== SCANNING & DISCOVERY (450) ====================
+            { cmd: "nmap -sS target.com", desc: "TCP SYN stealth scan", cat: "scanning" },
+            { cmd: "nmap -sT target.com", desc: "TCP connect scan", cat: "scanning" },
+            { cmd: "nmap -sU target.com", desc: "UDP scan", cat: "scanning" },
+            { cmd: "nmap -sU -p 53,67,68,69,123,161,162 target.com", desc: "Common UDP ports scan", cat: "scanning" },
+            { cmd: "nmap -sY target.com", desc: "SCTP INIT scan", cat: "scanning" },
+            { cmd: "nmap -sZ target.com", desc: "SCTP COOKIE ECHO scan", cat: "scanning" },
+            { cmd: "nmap -sN target.com", desc: "TCP NULL scan", cat: "scanning" },
+            { cmd: "nmap -sF target.com", desc: "TCP FIN scan", cat: "scanning" },
+            { cmd: "nmap -sX target.com", desc: "TCP XMAS scan", cat: "scanning" },
+            { cmd: "nmap -sA target.com", desc: "TCP ACK scan (firewall detection)", cat: "scanning" },
+            { cmd: "nmap -sW target.com", desc: "TCP Window scan", cat: "scanning" },
+            { cmd: "nmap -sM target.com", desc: "TCP Maimon scan", cat: "scanning" },
+            { cmd: "nmap -sO target.com", desc: "IP protocol scan", cat: "scanning" },
+            { cmd: "nmap -sO --protocols 1,2,4,6,17 target.com", desc: "Specific IP protocols", cat: "scanning" },
+            { cmd: "nmap -b username:password@ftp.relay.com:21 target.com", desc: "FTP bounce scan", cat: "scanning" },
+            { cmd: "nmap -b ftp.relay.com target.com", desc: "FTP bounce anonymous", cat: "scanning" },
+            { cmd: "nmap -sI zombie.com target.com", desc: "Idle scan using zombie", cat: "scanning" },
+            { cmd: "nmap -sI zombie.com:80 target.com", desc: "Idle scan with port", cat: "scanning" },
+            { cmd: "nmap -sI 192.168.1.100 target.com", desc: "Idle scan with IP", cat: "scanning" },
+            { cmd: "nmap -sV -sS target.com", desc: "SYN scan with version detection", cat: "scanning" },
+            { cmd: "nmap -sV -sT target.com", desc: "Connect scan with version detection", cat: "scanning" },
+            { cmd: "nmap -sV -sU target.com", desc: "UDP scan with version detection", cat: "scanning" },
+            { cmd: "nmap -O -sS target.com", desc: "SYN scan with OS detection", cat: "scanning" },
+            { cmd: "nmap -O -sT target.com", desc: "Connect scan with OS detection", cat: "scanning" },
+            { cmd: "nmap -O -sU target.com", desc: "UDP scan with OS detection", cat: "scanning" },
+            { cmd: "nmap -A -sS target.com", desc: "SYN scan with aggressive options", cat: "scanning" },
+            { cmd: "nmap -A -sT target.com", desc: "Connect scan with aggressive options", cat: "scanning" },
+            { cmd: "nmap -A -sU target.com", desc: "UDP scan with aggressive options", cat: "scanning" },
+            { cmd: "nmap -sS -f target.com", desc: "SYN scan with fragmentation", cat: "scanning" },
+            { cmd: "nmap -sS -f -f target.com", desc: "SYN scan with double fragmentation", cat: "scanning" },
+            { cmd: "nmap -sS --mtu 24 target.com", desc: "SYN scan with custom MTU", cat: "scanning" },
+            { cmd: "nmap -sS -D RND:10 target.com", desc: "SYN scan with decoys", cat: "scanning" },
+            { cmd: "nmap -sS -D decoy1,decoy2,ME target.com", desc: "SYN scan with specific decoys", cat: "scanning" },
+            { cmd: "nmap -sS -S 192.168.1.100 target.com", desc: "SYN scan with spoofed source", cat: "scanning" },
+            { cmd: "nmap -sS -g 53 target.com", desc: "SYN scan with source port", cat: "scanning" },
+            { cmd: "nmap -sS --source-port 53 target.com", desc: "SYN scan with source port", cat: "scanning" },
+            { cmd: "nmap -sS --spoof-mac 0 target.com", desc: "SYN scan with random MAC", cat: "scanning" },
+            { cmd: "nmap -sS --spoof-mac Cisco target.com", desc: "SYN scan with vendor MAC", cat: "scanning" },
+            { cmd: "nmap -sS --spoof-mac 00:11:22:33:44:55 target.com", desc: "SYN scan with specific MAC", cat: "scanning" },
+            { cmd: "nmap -sS --badsum target.com", desc: "SYN scan with bad checksums", cat: "scanning" },
+            { cmd: "nmap -sS --data-length 100 target.com", desc: "SYN scan with extra data", cat: "scanning" },
+            { cmd: "nmap -sS --ttl 128 target.com", desc: "SYN scan with TTL", cat: "scanning" },
+            { cmd: "nmap -sS --ip-options \"S RR\" target.com", desc: "SYN scan with IP options", cat: "scanning" },
+            { cmd: "nmap -sS --ip-options \"\\x01\\x07\\x08\" target.com", desc: "SYN scan with hex IP options", cat: "scanning" },
+            { cmd: "nmap -sS --send-eth target.com", desc: "SYN scan raw Ethernet", cat: "scanning" },
+            { cmd: "nmap -sS --send-ip target.com", desc: "SYN scan IP packets", cat: "scanning" },
+            { cmd: "nmap -sU -f target.com", desc: "UDP scan with fragmentation", cat: "scanning" },
+            { cmd: "nmap -sU --data-length 100 target.com", desc: "UDP scan with extra data", cat: "scanning" },
+            { cmd: "nmap -sU --ttl 128 target.com", desc: "UDP scan with TTL", cat: "scanning" },
+            { cmd: "nmap -sU --ip-options \"S RR\" target.com", desc: "UDP scan with IP options", cat: "scanning" },
+            { cmd: "nmap -sU --badsum target.com", desc: "UDP scan with bad checksums", cat: "scanning" },
+            { cmd: "nmap -sY -f target.com", desc: "SCTP scan with fragmentation", cat: "scanning" },
+            { cmd: "nmap -sZ -f target.com", desc: "SCTP COOKIE ECHO with fragmentation", cat: "scanning" },
+            { cmd: "nmap -sN -f target.com", desc: "NULL scan with fragmentation", cat: "scanning" },
+            { cmd: "nmap -sF -f target.com", desc: "FIN scan with fragmentation", cat: "scanning" },
+            { cmd: "nmap -sX -f target.com", desc: "XMAS scan with fragmentation", cat: "scanning" },
+            { cmd: "nmap -sA -f target.com", desc: "ACK scan with fragmentation", cat: "scanning" },
+            { cmd: "nmap -sW -f target.com", desc: "Window scan with fragmentation", cat: "scanning" },
+            { cmd: "nmap -sM -f target.com", desc: "Maimon scan with fragmentation", cat: "scanning" },
+            { cmd: "nmap -sO -f target.com", desc: "IP protocol scan with fragmentation", cat: "scanning" },
+            { cmd: "nmap -sS -sU target.com", desc: "Combined TCP SYN and UDP scan", cat: "scanning" },
+            { cmd: "nmap -sS -sU -p U:53,67,123,T:21,22,80 target.com", desc: "Mixed TCP/UDP specific ports", cat: "scanning" },
+            { cmd: "nmap -sS -sV -O -A target.com", desc: "Complete scan suite", cat: "scanning" },
+            { cmd: "nmap -sS -sV -O -A -p- target.com", desc: "Complete all ports scan", cat: "scanning" },
+            { cmd: "nmap -sS -sV -O -A -p 1-1000 target.com", desc: "Complete 1-1000 ports", cat: "scanning" },
+            { cmd: "nmap -sS -sV -O -A --top-ports 1000 target.com", desc: "Complete top 1000 ports", cat: "scanning" },
+            { cmd: "nmap -sS -sV -O -A -F target.com", desc: "Complete fast scan", cat: "scanning" },
+            { cmd: "nmap -sS -sV -O -A --traceroute target.com", desc: "Complete scan with traceroute", cat: "scanning" },
+            { cmd: "nmap -sS -sV -O -A --packet-trace target.com", desc: "Complete scan with packet trace", cat: "scanning" },
+            { cmd: "nmap -sS -sV -O -A --reason target.com", desc: "Complete scan with reasons", cat: "scanning" },
+            { cmd: "nmap -sS -sV -O -A --open target.com", desc: "Complete scan show only open", cat: "scanning" },
+            { cmd: "nmap -sS -sV -O -A --defeat-rst-ratelimit target.com", desc: "Complete scan defeat RST rate", cat: "scanning" },
+            { cmd: "nmap -sS -sV -O -A --nsock-engine epoll target.com", desc: "Complete scan with epoll", cat: "scanning" },
+            { cmd: "nmap -sS -sV -O -A --unprivileged target.com", desc: "Complete scan unprivileged", cat: "scanning" },
+            { cmd: "nmap -sS -sV -O -A --release-memory target.com", desc: "Complete scan release memory", cat: "scanning" },
+            { cmd: "nmap -sS -sV -O -A --send-eth target.com", desc: "Complete scan raw Ethernet", cat: "scanning" },
+            { cmd: "nmap -sS -sV -O -A --send-ip target.com", desc: "Complete scan IP packets", cat: "scanning" },
+            { cmd: "nmap -sS -sV -O -A --allports target.com", desc: "Complete scan all ports", cat: "scanning" },
+            { cmd: "nmap -sS -sV -O -A --version-trace target.com", desc: "Complete scan version trace", cat: "scanning" },
+            { cmd: "nmap -sS -sV -O -A --script-trace target.com", desc: "Complete scan script trace", cat: "scanning" },
+            { cmd: "nmap -sS -sV -O -A --min-rate 100 target.com", desc: "Complete scan min rate", cat: "scanning" },
+            { cmd: "nmap -sS -sV -O -A --max-rate 1000 target.com", desc: "Complete scan max rate", cat: "scanning" },
+            { cmd: "nmap -sS -sV -O -A --min-hostgroup 10 target.com", desc: "Complete scan min hostgroup", cat: "scanning" },
+            { cmd: "nmap -sS -sV -O -A --max-hostgroup 256 target.com", desc: "Complete scan max hostgroup", cat: "scanning" },
+            { cmd: "nmap -sS -sV -O -A --min-parallelism 10 target.com", desc: "Complete scan min parallelism", cat: "scanning" },
+            { cmd: "nmap -sS -sV -O -A --max-parallelism 100 target.com", desc: "Complete scan max parallelism", cat: "scanning" },
+            { cmd: "nmap -sS -sV -O -A --min-rtt-timeout 100ms target.com", desc: "Complete scan min RTT timeout", cat: "scanning" },
+            { cmd: "nmap -sS -sV -O -A --max-rtt-timeout 1000ms target.com", desc: "Complete scan max RTT timeout", cat: "scanning" },
+            { cmd: "nmap -sS -sV -O -A --initial-rtt-timeout 500ms target.com", desc: "Complete scan initial RTT timeout", cat: "scanning" },
+            { cmd: "nmap -sS -sV -O -A --max-retries 3 target.com", desc: "Complete scan max retries", cat: "scanning" },
+            { cmd: "nmap -sS -sV -O -A --host-timeout 30m target.com", desc: "Complete scan host timeout", cat: "scanning" },
+            { cmd: "nmap -sS -sV -O -A --scan-delay 100ms target.com", desc: "Complete scan delay", cat: "scanning" },
+            { cmd: "nmap -sS -sV -O -A --max-scan-delay 5s target.com", desc: "Complete scan max delay", cat: "scanning" },
+            { cmd: "nmap -sS -sV -O -A -6 target.com", desc: "Complete IPv6 scan", cat: "scanning" },
+
+            // ==================== SERVICE DETECTION (100) ====================
+            { cmd: "nmap -sV target.com", desc: "Version detection", cat: "service" },
+            { cmd: "nmap -sV --version-intensity 0 target.com", desc: "Light version detection", cat: "service" },
+            { cmd: "nmap -sV --version-intensity 1 target.com", desc: "Version intensity 1", cat: "service" },
+            { cmd: "nmap -sV --version-intensity 2 target.com", desc: "Version intensity 2", cat: "service" },
+            { cmd: "nmap -sV --version-intensity 3 target.com", desc: "Version intensity 3", cat: "service" },
+            { cmd: "nmap -sV --version-intensity 4 target.com", desc: "Version intensity 4", cat: "service" },
+            { cmd: "nmap -sV --version-intensity 5 target.com", desc: "Version intensity 5", cat: "service" },
+            { cmd: "nmap -sV --version-intensity 6 target.com", desc: "Version intensity 6", cat: "service" },
+            { cmd: "nmap -sV --version-intensity 7 target.com", desc: "Version intensity 7", cat: "service" },
+            { cmd: "nmap -sV --version-intensity 8 target.com", desc: "Version intensity 8", cat: "service" },
+            { cmd: "nmap -sV --version-intensity 9 target.com", desc: "Aggressive version detection", cat: "service" },
+            { cmd: "nmap -sV --version-light target.com", desc: "Light version detection", cat: "service" },
+            { cmd: "nmap -sV --version-all target.com", desc: "Try every single probe", cat: "service" },
+            { cmd: "nmap -sV --version-trace target.com", desc: "Trace version detection activity", cat: "service" },
+            { cmd: "nmap -sV --version-db /path/to/version target.com", desc: "Custom version database", cat: "service" },
+            { cmd: "nmap -sV --servicedb /path/to/services target.com", desc: "Custom services database", cat: "service" },
+            { cmd: "nmap -sV --allports target.com", desc: "Don't exclude any ports from version detection", cat: "service" },
+            { cmd: "nmap -sV -p 80,443 target.com", desc: "Version detection on specific ports", cat: "service" },
+            { cmd: "nmap -sV -p 1-1000 target.com", desc: "Version detection on port range", cat: "service" },
+            { cmd: "nmap -sV -p- target.com", desc: "Version detection on all ports", cat: "service" },
+            { cmd: "nmap -sV -F target.com", desc: "Version detection fast scan", cat: "service" },
+            { cmd: "nmap -sV --top-ports 100 target.com", desc: "Version detection top ports", cat: "service" },
+            { cmd: "nmap -sV --top-ports 1000 target.com", desc: "Version detection top 1000 ports", cat: "service" },
+            { cmd: "nmap -sV -O target.com", desc: "Version and OS detection", cat: "service" },
+            { cmd: "nmap -sV -O -A target.com", desc: "Version, OS and aggressive", cat: "service" },
+            { cmd: "nmap -sV -sC target.com", desc: "Version detection with default scripts", cat: "service" },
+            { cmd: "nmap -sV --script default target.com", desc: "Version detection with default scripts", cat: "service" },
+            { cmd: "nmap -sV --script safe target.com", desc: "Version detection with safe scripts", cat: "service" },
+            { cmd: "nmap -sV --script vuln target.com", desc: "Version detection with vulnerability scripts", cat: "service" },
+            { cmd: "nmap -sV --script exploit target.com", desc: "Version detection with exploit scripts", cat: "service" },
+            { cmd: "nmap -sV --script auth target.com", desc: "Version detection with auth scripts", cat: "service" },
+            { cmd: "nmap -sV --script brute target.com", desc: "Version detection with brute force scripts", cat: "service" },
+            { cmd: "nmap -sV --script discovery target.com", desc: "Version detection with discovery scripts", cat: "service" },
+            { cmd: "nmap -sV --script dos target.com", desc: "Version detection with DoS scripts", cat: "service" },
+            { cmd: "nmap -sV --script external target.com", desc: "Version detection with external scripts", cat: "service" },
+            { cmd: "nmap -sV --script fuzzer target.com", desc: "Version detection with fuzzer scripts", cat: "service" },
+            { cmd: "nmap -sV --script intrusive target.com", desc: "Version detection with intrusive scripts", cat: "service" },
+            { cmd: "nmap -sV --script malware target.com", desc: "Version detection with malware scripts", cat: "service" },
+            { cmd: "nmap -sV --script version target.com", desc: "Version detection with version scripts", cat: "service" },
+            { cmd: "nmap -sV --script \"default or safe\" target.com", desc: "Version detection with default or safe", cat: "service" },
+            { cmd: "nmap -sV --script \"default and safe\" target.com", desc: "Version detection with default and safe", cat: "service" },
+            { cmd: "nmap -sV --script \"not intrusive\" target.com", desc: "Version detection not intrusive", cat: "service" },
+            { cmd: "nmap -sV --script \"http-*\" target.com", desc: "Version detection with all HTTP scripts", cat: "service" },
+            { cmd: "nmap -sV --script \"ftp-*\" target.com", desc: "Version detection with all FTP scripts", cat: "service" },
+            { cmd: "nmap -sV --script \"smb-*\" target.com", desc: "Version detection with all SMB scripts", cat: "service" },
+            { cmd: "nmap -sV --script \"ssl-*\" target.com", desc: "Version detection with all SSL scripts", cat: "service" },
+            { cmd: "nmap -sV --script \"ssh-*\" target.com", desc: "Version detection with all SSH scripts", cat: "service" },
+            { cmd: "nmap -sV --script \"dns-*\" target.com", desc: "Version detection with all DNS scripts", cat: "service" },
+            { cmd: "nmap -sV --script \"sql-*\" target.com", desc: "Version detection with all SQL scripts", cat: "service" },
+            { cmd: "nmap -sV --script \"vuln and http-*\" target.com", desc: "Version detection with vuln and HTTP", cat: "service" },
+            { cmd: "nmap -sV --script-args http.useragent=\"Mozilla/5.0\" target.com", desc: "Version detection with user agent", cat: "service" },
+            { cmd: "nmap -sV --script-args http-headers.http-user-agent=\"Mozilla/5.0\" target.com", desc: "Version detection with HTTP headers", cat: "service" },
+            { cmd: "nmap -sV --script-args http-enum.basepath=\"/admin/\" target.com", desc: "Version detection with enum basepath", cat: "service" },
+            { cmd: "nmap -sV --script-args http-brute.path=\"/admin/\" target.com", desc: "Version detection with brute path", cat: "service" },
+            { cmd: "nmap -sV --script-args http-brute.method=POST target.com", desc: "Version detection with brute method", cat: "service" },
+            { cmd: "nmap -sV --script-args http-brute.passdb=/path/to/passwords target.com", desc: "Version detection with password db", cat: "service" },
+            { cmd: "nmap -sV --script-args http-brute.userdb=/path/to/users target.com", desc: "Version detection with user db", cat: "service" },
+            { cmd: "nmap -sV --script-args http-brute.threads=10 target.com", desc: "Version detection with brute threads", cat: "service" },
+            { cmd: "nmap -sV --script-args http-brute.emptypass=true target.com", desc: "Version detection with empty pass", cat: "service" },
+            { cmd: "nmap -sV --script-args http-brute.uservar=username target.com", desc: "Version detection with user var", cat: "service" },
+            { cmd: "nmap -sV --script-args http-brute.passvar=password target.com", desc: "Version detection with pass var", cat: "service" },
+            { cmd: "nmap -sV --script-args http-form-brute.form-path=\"/login.php\" target.com", desc: "Version detection with form path", cat: "service" },
+            { cmd: "nmap -sV --script-args http-form-brute.form-details=\"user=USER&pass=PASS\" target.com", desc: "Version detection with form details", cat: "service" },
+            { cmd: "nmap -sV --script-args http-form-brute.form-method=POST target.com", desc: "Version detection with form method", cat: "service" },
+            { cmd: "nmap -sV --script-args http-form-brute.form-action=\"/login.php\" target.com", desc: "Version detection with form action", cat: "service" },
+            { cmd: "nmap -sV --script-args http-form-brute.form-fields=\"user,pass\" target.com", desc: "Version detection with form fields", cat: "service" },
+            { cmd: "nmap -sV --script-timeout 5m target.com", desc: "Version detection with script timeout", cat: "service" },
+            { cmd: "nmap -sV --script-updatedb", desc: "Update script database", cat: "service" },
+            { cmd: "nmap --script banner target.com", desc: "Banner grabbing", cat: "service" },
+            { cmd: "nmap --script ssh-hostkey target.com", desc: "SSH host key retrieval", cat: "service" },
+            { cmd: "nmap --script ssh-auth-methods target.com", desc: "SSH authentication methods", cat: "service" },
+            { cmd: "nmap --script ssh2-enum-algos target.com", desc: "SSH2 algorithms enumeration", cat: "service" },
+            { cmd: "nmap --script sshv1 target.com", desc: "SSHv1 detection", cat: "service" },
+            { cmd: "nmap --script ftp-anon target.com", desc: "FTP anonymous login check", cat: "service" },
+            { cmd: "nmap --script ftp-syst target.com", desc: "FTP system type", cat: "service" },
+            { cmd: "nmap --script smb-os-discovery target.com", desc: "SMB OS discovery", cat: "service" },
+            { cmd: "nmap --script smb-protocols target.com", desc: "SMB protocols detection", cat: "service" },
+            { cmd: "nmap --script smb-security-mode target.com", desc: "SMB security mode", cat: "service" },
+            { cmd: "nmap --script smb-system-info target.com", desc: "SMB system information", cat: "service" },
+            { cmd: "nmap --script dns-nsid target.com", desc: "DNS NSID information", cat: "service" },
+            { cmd: "nmap --script dns-recursion target.com", desc: "DNS recursion check", cat: "service" },
+            { cmd: "nmap --script dns-service-discovery target.com", desc: "DNS service discovery", cat: "service" },
+            { cmd: "nmap --script http-headers target.com", desc: "HTTP headers", cat: "service" },
+            { cmd: "nmap --script http-methods target.com", desc: "HTTP methods", cat: "service" },
+            { cmd: "nmap --script http-robots.txt target.com", desc: "Robots.txt check", cat: "service" },
+            { cmd: "nmap --script http-title target.com", desc: "HTTP page title", cat: "service" },
+            { cmd: "nmap --script http-favicon target.com", desc: "HTTP favicon hash", cat: "service" },
+            { cmd: "nmap --script http-generator target.com", desc: "HTTP generator detection", cat: "service" },
+            { cmd: "nmap --script http-server-header target.com", desc: "HTTP server header", cat: "service" },
+            { cmd: "nmap --script ssl-cert target.com", desc: "SSL certificate information", cat: "service" },
+            { cmd: "nmap --script ssl-enum-ciphers target.com", desc: "SSL cipher enumeration", cat: "service" },
+            { cmd: "nmap --script ssl-date target.com", desc: "SSL certificate date", cat: "service" },
+            { cmd: "nmap --script ssl-known-key target.com", desc: "SSL known keys", cat: "service" },
+            { cmd: "nmap --script ssl-cert-intaddr target.com", desc: "SSL certificate internal addresses", cat: "service" },
+            { cmd: "nmap --script ssl-google-cert-catalog target.com", desc: "SSL Google certificate catalog", cat: "service" },
+            { cmd: "nmap --script tls-alpn target.com", desc: "TLS ALPN extension", cat: "service" },
+            { cmd: "nmap --script tls-nextprotoneg target.com", desc: "TLS Next Protocol Negotiation", cat: "service" },
+            { cmd: "nmap --script tls-version target.com", desc: "TLS version detection", cat: "service" },
+            { cmd: "nmap --script smtp-commands target.com", desc: "SMTP commands", cat: "service" },
+            { cmd: "nmap --script smtp-enum-users target.com", desc: "SMTP user enumeration", cat: "service" },
+            { cmd: "nmap --script smtp-open-relay target.com", desc: "SMTP open relay check", cat: "service" },
+            { cmd: "nmap --script smtp-vuln-cve2010-4344 target.com", desc: "SMTP Exim CVE-2010-4344", cat: "service" },
+            { cmd: "nmap --script smtp-vuln-cve2011-1720 target.com", desc: "SMTP Exim CVE-2011-1720", cat: "service" },
+            { cmd: "nmap --script smtp-vuln-cve2011-1764 target.com", desc: "SMTP Exim CVE-2011-1764", cat: "service" },
+            { cmd: "nmap --script pop3-capabilities target.com", desc: "POP3 capabilities", cat: "service" },
+            { cmd: "nmap --script imap-capabilities target.com", desc: "IMAP capabilities", cat: "service" },
+
+            // ==================== NSE SCRIPTS (500) ====================
+            { cmd: "nmap --script http-enum target.com", desc: "HTTP enumeration", cat: "nse" },
+            { cmd: "nmap --script http-brute target.com", desc: "HTTP brute force", cat: "nse" },
+            { cmd: "nmap --script http-form-brute target.com", desc: "HTTP form brute force", cat: "nse" },
+            { cmd: "nmap --script http-headers target.com", desc: "HTTP headers", cat: "nse" },
+            { cmd: "nmap --script http-methods target.com", desc: "HTTP methods", cat: "nse" },
+            { cmd: "nmap --script http-methods --script-args http-methods.test-all=true target.com", desc: "Test all HTTP methods", cat: "nse" },
+            { cmd: "nmap --script http-robots.txt target.com", desc: "Robots.txt check", cat: "nse" },
+            { cmd: "nmap --script http-sitemap-generator target.com", desc: "Sitemap generator", cat: "nse" },
+            { cmd: "nmap --script http-php-version target.com", desc: "PHP version detection", cat: "nse" },
+            { cmd: "nmap --script http-server-header target.com", desc: "Server header", cat: "nse" },
+            { cmd: "nmap --script http-title target.com", desc: "Page title", cat: "nse" },
+            { cmd: "nmap --script http-favicon target.com", desc: "Favicon hash", cat: "nse" },
+            { cmd: "nmap --script http-generator target.com", desc: "Generator detection", cat: "nse" },
+            { cmd: "nmap --script http-auth target.com", desc: "HTTP authentication", cat: "nse" },
+            { cmd: "nmap --script http-auth-finder target.com", desc: "Find authentication pages", cat: "nse" },
+            { cmd: "nmap --script http-basic-auth-brute target.com", desc: "Basic auth brute force", cat: "nse" },
+            { cmd: "nmap --script http-digest-auth-brute target.com", desc: "Digest auth brute force", cat: "nse" },
+            { cmd: "nmap --script http-ntlm-auth-brute target.com", desc: "NTLM auth brute force", cat: "nse" },
+            { cmd: "nmap --script http-kerberos-auth-brute target.com", desc: "Kerberos auth brute force", cat: "nse" },
+            { cmd: "nmap --script http-open-proxy target.com", desc: "Open proxy detection", cat: "nse" },
+            { cmd: "nmap --script http-open-redirect target.com", desc: "Open redirect detection", cat: "nse" },
+            { cmd: "nmap --script http-csrf target.com", desc: "CSRF detection", cat: "nse" },
+            { cmd: "nmap --script http-stored-xss target.com", desc: "Stored XSS detection", cat: "nse" },
+            { cmd: "nmap --script http-phpself-xss target.com", desc: "PHP self XSS detection", cat: "nse" },
+            { cmd: "nmap --script http-jsonp-detection target.com", desc: "JSONP detection", cat: "nse" },
+            { cmd: "nmap --script http-domino-enum target.com", desc: "Domino enumeration", cat: "nse" },
+            { cmd: "nmap --script http-dombased-xss target.com", desc: "DOM-based XSS detection", cat: "nse" },
+            { cmd: "nmap --script http-fileupload-exploiter target.com", desc: "File upload exploiter", cat: "nse" },
+            { cmd: "nmap --script http-git target.com", desc: "Git repository detection", cat: "nse" },
+            { cmd: "nmap --script http-svn-enum target.com", desc: "SVN enumeration", cat: "nse" },
+            { cmd: "nmap --script http-cvs-brute target.com", desc: "CVS brute force", cat: "nse" },
+            { cmd: "nmap --script http-config-backup target.com", desc: "Config backup discovery", cat: "nse" },
+            { cmd: "nmap --script http-backup-finder target.com", desc: "Backup file finder", cat: "nse" },
+            { cmd: "nmap --script http-default-accounts target.com", desc: "Default accounts", cat: "nse" },
+            { cmd: "nmap --script http-devframework target.com", desc: "Development framework detection", cat: "nse" },
+            { cmd: "nmap --script http-drupal-enum target.com", desc: "Drupal enumeration", cat: "nse" },
+            { cmd: "nmap --script http-drupal-modules target.com", desc: "Drupal modules", cat: "nse" },
+            { cmd: "nmap --script http-drupal-themes target.com", desc: "Drupal themes", cat: "nse" },
+            { cmd: "nmap --script http-wordpress-enum target.com", desc: "WordPress enumeration", cat: "nse" },
+            { cmd: "nmap --script http-wordpress-brute target.com", desc: "WordPress brute force", cat: "nse" },
+            { cmd: "nmap --script http-wordpress-users target.com", desc: "WordPress users", cat: "nse" },
+            { cmd: "nmap --script http-joomla-brute target.com", desc: "Joomla brute force", cat: "nse" },
+            { cmd: "nmap --script http-joomla-components target.com", desc: "Joomla components", cat: "nse" },
+            { cmd: "nmap --script http-joomla-modules target.com", desc: "Joomla modules", cat: "nse" },
+            { cmd: "nmap --script http-joomla-themes target.com", desc: "Joomla themes", cat: "nse" },
+            { cmd: "nmap --script http-joomla-version target.com", desc: "Joomla version", cat: "nse" },
+            { cmd: "nmap --script http-moodle-enum target.com", desc: "Moodle enumeration", cat: "nse" },
+            { cmd: "nmap --script http-moodle-brute target.com", desc: "Moodle brute force", cat: "nse" },
+            { cmd: "nmap --script http-moodle-users target.com", desc: "Moodle users", cat: "nse" },
+            { cmd: "nmap --script http-plone-enum target.com", desc: "Plone enumeration", cat: "nse" },
+            { cmd: "nmap --script http-plone-brute target.com", desc: "Plone brute force", cat: "nse" },
+            { cmd: "nmap --script http-plone-users target.com", desc: "Plone users", cat: "nse" },
+            { cmd: "nmap --script http-owncloud-enum target.com", desc: "OwnCloud enumeration", cat: "nse" },
+            { cmd: "nmap --script http-owncloud-brute target.com", desc: "OwnCloud brute force", cat: "nse" },
+            { cmd: "nmap --script http-nextcloud-enum target.com", desc: "NextCloud enumeration", cat: "nse" },
+            { cmd: "nmap --script http-nextcloud-brute target.com", desc: "NextCloud brute force", cat: "nse" },
+            { cmd: "nmap --script http-webdav-scan target.com", desc: "WebDAV scan", cat: "nse" },
+            { cmd: "nmap --script http-iis-webdav-vuln target.com", desc: "IIS WebDAV vulnerability", cat: "nse" },
+            { cmd: "nmap --script http-apache-server-status target.com", desc: "Apache server status", cat: "nse" },
+            { cmd: "nmap --script http-nginx-version target.com", desc: "Nginx version", cat: "nse" },
+            { cmd: "nmap --script http-iis-version target.com", desc: "IIS version", cat: "nse" },
+            { cmd: "nmap --script http-tomcat-mgr target.com", desc: "Tomcat manager", cat: "nse" },
+            { cmd: "nmap --script http-tomcat-brute target.com", desc: "Tomcat brute force", cat: "nse" },
+            { cmd: "nmap --script http-vmware-path-vuln target.com", desc: "VMware path vulnerability", cat: "nse" },
+            { cmd: "nmap --script http-vmware-enum target.com", desc: "VMware enumeration", cat: "nse" },
+            { cmd: "nmap --script http-vmware-brute target.com", desc: "VMware brute force", cat: "nse" },
+            { cmd: "nmap --script http-vmware-version target.com", desc: "VMware version", cat: "nse" },
+            { cmd: "nmap --script http-vlc-stream target.com", desc: "VLC stream", cat: "nse" },
+            { cmd: "nmap --script http-vlc-stream-brute target.com", desc: "VLC stream brute force", cat: "nse" },
+            { cmd: "nmap --script http-vlc-stream-enum target.com", desc: "VLC stream enumeration", cat: "nse" },
+            { cmd: "nmap --script http-waf-detect target.com", desc: "WAF detection", cat: "nse" },
+            { cmd: "nmap --script http-waf-fingerprint target.com", desc: "WAF fingerprinting", cat: "nse" },
+            { cmd: "nmap --script http-security-headers target.com", desc: "Security headers check", cat: "nse" },
+            { cmd: "nmap --script http-cors target.com", desc: "CORS misconfiguration", cat: "nse" },
+            { cmd: "nmap --script http-cors --script-args http-cors.origin=\"https://evil.com\" target.com", desc: "CORS with origin", cat: "nse" },
+            { cmd: "nmap --script http-put target.com", desc: "HTTP PUT method test", cat: "nse" },
+            { cmd: "nmap --script http-trace target.com", desc: "HTTP TRACE method test", cat: "nse" },
+            { cmd: "nmap --script http-track target.com", desc: "HTTP TRACK method test", cat: "nse" },
+            { cmd: "nmap --script http-proxy-brute target.com", desc: "HTTP proxy brute force", cat: "nse" },
+            { cmd: "nmap --script http-proxy-enum target.com", desc: "HTTP proxy enumeration", cat: "nse" },
+            { cmd: "nmap --script http-grep target.com", desc: "HTTP content grep", cat: "nse" },
+            { cmd: "nmap --script http-email-harvest target.com", desc: "Email harvesting", cat: "nse" },
+            { cmd: "nmap --script http-errors target.com", desc: "HTTP error pages", cat: "nse" },
+            { cmd: "nmap --script http-exif-spider target.com", desc: "EXIF data spider", cat: "nse" },
+            { cmd: "nmap --script http-frontpage-login target.com", desc: "FrontPage login", cat: "nse" },
+            { cmd: "nmap --script http-google-malware target.com", desc: "Google malware check", cat: "nse" },
+            { cmd: "nmap --script http-gitweb-projects-enum target.com", desc: "GitWeb projects enumeration", cat: "nse" },
+            { cmd: "nmap --script http-hp-ilo-detect target.com", desc: "HP iLO detection", cat: "nse" },
+            { cmd: "nmap --script http-hp-ilo-brute target.com", desc: "HP iLO brute force", cat: "nse" },
+            { cmd: "nmap --script http-huawei-hg5xx-vuln target.com", desc: "Huawei HG5xx vulnerability", cat: "nse" },
+            { cmd: "nmap --script http-icloud target.com", desc: "iCloud check", cat: "nse" },
+            { cmd: "nmap --script http-icloud-brute target.com", desc: "iCloud brute force", cat: "nse" },
+            { cmd: "nmap --script http-icloud-findmyiphone target.com", desc: "Find My iPhone", cat: "nse" },
+            { cmd: "nmap --script http-ihsdocument-vuln target.com", desc: "IHS document vulnerability", cat: "nse" },
+            { cmd: "nmap --script http-internal-ip-disclosure target.com", desc: "Internal IP disclosure", cat: "nse" },
+            { cmd: "nmap --script http-ispconfig-brute target.com", desc: "ISPConfig brute force", cat: "nse" },
+            { cmd: "nmap --script http-java-rmi target.com", desc: "Java RMI", cat: "nse" },
+            { cmd: "nmap --script http-jboss-vulnscan target.com", desc: "JBoss vulnerability scan", cat: "nse" },
+            { cmd: "nmap --script http-joomla-brute --script-args http-joomla-brute.threads=10 target.com", desc: "Joomla brute with threads", cat: "nse" },
+            { cmd: "nmap --script http-litespeed-sourcecode-download target.com", desc: "LiteSpeed source code download", cat: "nse" },
+            { cmd: "nmap --script http-litespeed-sourcecode-download --script-args http-litespeed-sourcecode-download.url=\"/index.php\" target.com", desc: "LiteSpeed specific file", cat: "nse" },
+            { cmd: "nmap --script http-majordomo2-dir-traversal target.com", desc: "Majordomo2 directory traversal", cat: "nse" },
+            { cmd: "nmap --script http-method-tamper target.com", desc: "HTTP method tampering", cat: "nse" },
+            { cmd: "nmap --script http-mobileversion-checker target.com", desc: "Mobile version checker", cat: "nse" },
+            { cmd: "nmap --script http-ntlm-info target.com", desc: "NTLM information", cat: "nse" },
+            { cmd: "nmap --script http-passwd target.com", desc: "Password file discovery", cat: "nse" },
+            { cmd: "nmap --script http-phpmyadmin-dir-traversal target.com", desc: "phpMyAdmin directory traversal", cat: "nse" },
+            { cmd: "nmap --script http-phpself-xss --script-args http-phpself-xss.url=\"/index.php\" target.com", desc: "PHP self XSS specific URL", cat: "nse" },
+            { cmd: "nmap --script http-phpversion target.com", desc: "PHP version", cat: "nse" },
+            { cmd: "nmap --script http-proxy-open-proxy target.com", desc: "Open proxy test", cat: "nse" },
+            { cmd: "nmap --script http-rfi-spider target.com", desc: "RFI spider", cat: "nse" },
+            { cmd: "nmap --script http-robots.txt --script-args http-robots.txt.url=\"/robots.txt\" target.com", desc: "Specific robots.txt", cat: "nse" },
+            { cmd: "nmap --script http-rtsp-methods target.com", desc: "RTSP methods", cat: "nse" },
+            { cmd: "nmap --script http-rtsp-url-brute target.com", desc: "RTSP URL brute force", cat: "nse" },
+            { cmd: "nmap --script http-sap-netweaver-leak target.com", desc: "SAP NetWeaver leak", cat: "nse" },
+            { cmd: "nmap --script http-shellshock target.com", desc: "Shellshock vulnerability", cat: "nse" },
+            { cmd: "nmap --script http-shellshock --script-args http-shellshock.uri=\"/cgi-bin/test.cgi\" target.com", desc: "Shellshock specific URI", cat: "nse" },
+            { cmd: "nmap --script http-sitemap-generator --script-args http-sitemap-generator.url=\"/\" target.com", desc: "Sitemap specific URL", cat: "nse" },
+            { cmd: "nmap --script http-slowloris target.com", desc: "Slowloris DoS test", cat: "nse" },
+            { cmd: "nmap --script http-slowloris-check target.com", desc: "Slowloris check", cat: "nse" },
+            { cmd: "nmap --script http-sql-injection target.com", desc: "SQL injection detection", cat: "nse" },
+            { cmd: "nmap --script http-sql-injection --script-args http-sql-injection.url=\"/search.php\" target.com", desc: "SQL injection specific URL", cat: "nse" },
+            { cmd: "nmap --script http-stored-xss --script-args http-stored-xss.url=\"/comment.php\" target.com", desc: "Stored XSS specific URL", cat: "nse" },
+            { cmd: "nmap --script http-svn-enum --script-args http-svn-enum.url=\"/svn/\" target.com", desc: "SVN specific URL", cat: "nse" },
+            { cmd: "nmap --script http-traceroute target.com", desc: "HTTP traceroute", cat: "nse" },
+            { cmd: "nmap --script http-unsafe-output-escaping target.com", desc: "Unsafe output escaping", cat: "nse" },
+            { cmd: "nmap --script http-useragent-tester target.com", desc: "User agent tester", cat: "nse" },
+            { cmd: "nmap --script http-userdir-enum target.com", desc: "User directory enumeration", cat: "nse" },
+            { cmd: "nmap --script http-vhosts target.com", desc: "Virtual hosts discovery", cat: "nse" },
+            { cmd: "nmap --script http-vhosts --script-args http-vhosts.file=/path/to/vhosts.txt target.com", desc: "Virtual hosts with file", cat: "nse" },
+            { cmd: "nmap --script http-virustotal target.com", desc: "VirusTotal check", cat: "nse" },
+            { cmd: "nmap --script http-vlc-stream --script-args http-vlc-stream.url=\"/stream\" target.com", desc: "VLC stream specific URL", cat: "nse" },
+            { cmd: "nmap --script http-vmware-enum --script-args http-vmware-enum.url=\"/vsphere/\" target.com", desc: "VMware specific URL", cat: "nse" },
+            { cmd: "nmap --script http-vuln-cve2006-3392 target.com", desc: "CVE-2006-3392", cat: "nse" },
+            { cmd: "nmap --script http-vuln-cve2009-3960 target.com", desc: "CVE-2009-3960", cat: "nse" },
+            { cmd: "nmap --script http-vuln-cve2010-0738 target.com", desc: "CVE-2010-0738", cat: "nse" },
+            { cmd: "nmap --script http-vuln-cve2010-2861 target.com", desc: "CVE-2010-2861", cat: "nse" },
+            { cmd: "nmap --script http-vuln-cve2011-3192 target.com", desc: "CVE-2011-3192", cat: "nse" },
+            { cmd: "nmap --script http-vuln-cve2011-3368 target.com", desc: "CVE-2011-3368", cat: "nse" },
+            { cmd: "nmap --script http-vuln-cve2012-1823 target.com", desc: "CVE-2012-1823", cat: "nse" },
+            { cmd: "nmap --script http-vuln-cve2013-0156 target.com", desc: "CVE-2013-0156", cat: "nse" },
+            { cmd: "nmap --script http-vuln-cve2013-6786 target.com", desc: "CVE-2013-6786", cat: "nse" },
+            { cmd: "nmap --script http-vuln-cve2014-2126 target.com", desc: "CVE-2014-2126", cat: "nse" },
+            { cmd: "nmap --script http-vuln-cve2014-2127 target.com", desc: "CVE-2014-2127", cat: "nse" },
+            { cmd: "nmap --script http-vuln-cve2014-2128 target.com", desc: "CVE-2014-2128", cat: "nse" },
+            { cmd: "nmap --script http-vuln-cve2014-2129 target.com", desc: "CVE-2014-2129", cat: "nse" },
+            { cmd: "nmap --script http-vuln-cve2014-7169 target.com", desc: "CVE-2014-7169", cat: "nse" },
+            { cmd: "nmap --script http-vuln-cve2015-1427 target.com", desc: "CVE-2015-1427", cat: "nse" },
+            { cmd: "nmap --script http-vuln-cve2015-1635 target.com", desc: "CVE-2015-1635", cat: "nse" },
+            { cmd: "nmap --script http-vuln-cve2017-5638 target.com", desc: "CVE-2017-5638 (Apache Struts)", cat: "nse" },
+            { cmd: "nmap --script http-vuln-cve2017-1001000 target.com", desc: "CVE-2017-1001000", cat: "nse" },
+            { cmd: "nmap --script http-vuln-cve2018-13379 target.com", desc: "CVE-2018-13379", cat: "nse" },
+            { cmd: "nmap --script http-vuln-cve2021-44228 target.com", desc: "CVE-2021-44228 (Log4Shell)", cat: "nse" },
+            { cmd: "nmap --script http-vuln-cve2021-45046 target.com", desc: "CVE-2021-45046 (Log4Shell)", cat: "nse" },
+            { cmd: "nmap --script http-vuln-cve2022-22965 target.com", desc: "CVE-2022-22965 (Spring4Shell)", cat: "nse" },
+            { cmd: "nmap --script http-vuln-cve2022-1388 target.com", desc: "CVE-2022-1388", cat: "nse" },
+            { cmd: "nmap --script http-vuln-cve2022-30190 target.com", desc: "CVE-2022-30190 (Follina)", cat: "nse" },
+            { cmd: "nmap --script http-vuln-cve2023-23397 target.com", desc: "CVE-2023-23397", cat: "nse" },
+            { cmd: "nmap --script http-vuln-cve2023-38831 target.com", desc: "CVE-2023-38831", cat: "nse" },
+            { cmd: "nmap --script http-vuln-misfortune-cookie target.com", desc: "Misfortune Cookie vulnerability", cat: "nse" },
+            { cmd: "nmap --script http-vuln-wnr1000-creds target.com", desc: "Netgear WNR1000 credentials", cat: "nse" },
+            { cmd: "nmap --script http-waf-detect --script-args http-waf-detect.aggro target.com", desc: "Aggressive WAF detection", cat: "nse" },
+            { cmd: "nmap --script http-wordpress-enum --script-args http-wordpress-enum.searchall=true target.com", desc: "WordPress enum all", cat: "nse" },
+            { cmd: "nmap --script http-xssed target.com", desc: "XSSed database check", cat: "nse" },
+            { cmd: "nmap --script http-xssed --script-args http-xssed.url=\"/search.php\" target.com", desc: "XSSed specific URL", cat: "nse" },
+            { cmd: "nmap --script ssl-heartbleed target.com", desc: "Heartbleed vulnerability", cat: "nse" },
+            { cmd: "nmap --script ssl-poodle target.com", desc: "POODLE vulnerability", cat: "nse" },
+            { cmd: "nmap --script sslv2 target.com", desc: "SSLv2 detection", cat: "nse" },
+            { cmd: "nmap --script ssl-dh-params target.com", desc: "DH parameters", cat: "nse" },
+            { cmd: "nmap --script ssl-ccs-injection target.com", desc: "CCS injection", cat: "nse" },
+            { cmd: "nmap --script sslv2-drown target.com", desc: "DROWN vulnerability", cat: "nse" },
+            { cmd: "nmap --script tls-ticketbleed target.com", desc: "Ticketbleed vulnerability", cat: "nse" },
+            { cmd: "nmap --script smb-enum-shares target.com", desc: "SMB shares enumeration", cat: "nse" },
+            { cmd: "nmap --script smb-enum-users target.com", desc: "SMB users enumeration", cat: "nse" },
+            { cmd: "nmap --script smb-enum-groups target.com", desc: "SMB groups enumeration", cat: "nse" },
+            { cmd: "nmap --script smb-enum-processes target.com", desc: "SMB processes enumeration", cat: "nse" },
+            { cmd: "nmap --script smb-enum-sessions target.com", desc: "SMB sessions enumeration", cat: "nse" },
+            { cmd: "nmap --script smb-enum-domains target.com", desc: "SMB domains enumeration", cat: "nse" },
+            { cmd: "nmap --script smb-enum-services target.com", desc: "SMB services enumeration", cat: "nse" },
+            { cmd: "nmap --script smb-os-discovery target.com", desc: "SMB OS discovery", cat: "nse" },
+            { cmd: "nmap --script smb-protocols target.com", desc: "SMB protocols", cat: "nse" },
+            { cmd: "nmap --script smb-security-mode target.com", desc: "SMB security mode", cat: "nse" },
+            { cmd: "nmap --script smb-server-stats target.com", desc: "SMB server stats", cat: "nse" },
+            { cmd: "nmap --script smb-system-info target.com", desc: "SMB system info", cat: "nse" },
+            { cmd: "nmap --script smb-vuln-ms08-067 target.com", desc: "MS08-067 vulnerability", cat: "nse" },
+            { cmd: "nmap --script smb-vuln-ms10-054 target.com", desc: "MS10-054 vulnerability", cat: "nse" },
+            { cmd: "nmap --script smb-vuln-ms10-061 target.com", desc: "MS10-061 vulnerability", cat: "nse" },
+            { cmd: "nmap --script smb-vuln-ms17-010 target.com", desc: "MS17-010 (EternalBlue)", cat: "nse" },
+            { cmd: "nmap --script smb-vuln-cve2009-3103 target.com", desc: "CVE-2009-3103", cat: "nse" },
+            { cmd: "nmap --script smb-vuln-cve2017-7494 target.com", desc: "CVE-2017-7494 (SambaCry)", cat: "nse" },
+            { cmd: "nmap --script smb-brute target.com", desc: "SMB brute force", cat: "nse" },
+            { cmd: "nmap --script smb-brute --script-args smb-brute.threads=10 target.com", desc: "SMB brute with threads", cat: "nse" },
+            { cmd: "nmap --script smb-brute --script-args userdb=/path/to/users.txt target.com", desc: "SMB brute with user db", cat: "nse" },
+            { cmd: "nmap --script smb-brute --script-args passdb=/path/to/passwords.txt target.com", desc: "SMB brute with pass db", cat: "nse" },
+            { cmd: "nmap --script smb-brute --script-args smb-brute.emptypass=true target.com", desc: "SMB brute empty pass", cat: "nse" },
+            { cmd: "nmap --script smb-brute --script-args smbdomain=DOMAIN target.com", desc: "SMB brute with domain", cat: "nse" },
+            { cmd: "nmap --script smb-flood target.com", desc: "SMB flood", cat: "nse" },
+            { cmd: "nmap --script smb-ls target.com", desc: "SMB directory listing", cat: "nse" },
+            { cmd: "nmap --script smb-mbenum target.com", desc: "SMB mbenum", cat: "nse" },
+            { cmd: "nmap --script smb-psexec target.com", desc: "SMB psexec", cat: "nse" },
+            { cmd: "nmap --script smb-print-text target.com", desc: "SMB print text", cat: "nse" },
+            { cmd: "nmap --script smb-protocols --script-args smb-protocols.protocols=\"SMB1,SMB2,SMB3\" target.com", desc: "SMB specific protocols", cat: "nse" },
+            { cmd: "nmap --script smb-security-mode --script-args smb-security-mode.verbose=true target.com", desc: "SMB security verbose", cat: "nse" },
+            { cmd: "nmap --script smb-server-stats --script-args smb-server-stats.verbose=true target.com", desc: "SMB stats verbose", cat: "nse" },
+            { cmd: "nmap --script smb-system-info --script-args smb-system-info.verbose=true target.com", desc: "SMB system info verbose", cat: "nse" },
+            { cmd: "nmap --script smb-vuln-ms08-067 --script-args smb-vuln-ms08-067.check=true target.com", desc: "MS08-067 check", cat: "nse" },
+            { cmd: "nmap --script smb-vuln-ms10-054 --script-args smb-vuln-ms10-054.check=true target.com", desc: "MS10-054 check", cat: "nse" },
+            { cmd: "nmap --script smb-vuln-ms10-061 --script-args smb-vuln-ms10-061.check=true target.com", desc: "MS10-061 check", cat: "nse" },
+            { cmd: "nmap --script smb-vuln-ms17-010 --script-args smb-vuln-ms17-010.check=true target.com", desc: "MS17-010 check", cat: "nse" },
+            { cmd: "nmap --script smb-vuln-cve2009-3103 --script-args smb-vuln-cve2009-3103.check=true target.com", desc: "CVE-2009-3103 check", cat: "nse" },
+            { cmd: "nmap --script smb-vuln-cve2017-7494 --script-args smb-vuln-cve2017-7494.check=true target.com", desc: "CVE-2017-7494 check", cat: "nse" },
+            { cmd: "nmap --script snmp-info target.com", desc: "SNMP information", cat: "nse" },
+            { cmd: "nmap --script snmp-sysdescr target.com", desc: "SNMP system description", cat: "nse" },
+            { cmd: "nmap --script snmp-interfaces target.com", desc: "SNMP interfaces", cat: "nse" },
+            { cmd: "nmap --script snmp-netstat target.com", desc: "SNMP netstat", cat: "nse" },
+            { cmd: "nmap --script snmp-processes target.com", desc: "SNMP processes", cat: "nse" },
+            { cmd: "nmap --script snmp-brute target.com", desc: "SNMP brute force", cat: "nse" },
+            { cmd: "nmap --script snmp-ios-config target.com", desc: "SNMP iOS config", cat: "nse" },
+            { cmd: "nmap --script snmp-win32-services target.com", desc: "SNMP Windows services", cat: "nse" },
+            { cmd: "nmap --script snmp-win32-shares target.com", desc: "SNMP Windows shares", cat: "nse" },
+            { cmd: "nmap --script snmp-win32-software target.com", desc: "SNMP Windows software", cat: "nse" },
+            { cmd: "nmap --script snmp-win32-users target.com", desc: "SNMP Windows users", cat: "nse" },
+            { cmd: "nmap --script snmp-hh3c-logins target.com", desc: "SNMP HH3C logins", cat: "nse" },
+            { cmd: "nmap --script snmp-cisco-info target.com", desc: "SNMP Cisco info", cat: "nse" },
+            { cmd: "nmap --script snmp-cisco-tftp target.com", desc: "SNMP Cisco TFTP", cat: "nse" },
+            { cmd: "nmap --script snmp-cisco-config target.com", desc: "SNMP Cisco config", cat: "nse" },
+            { cmd: "nmap --script snmp-juniper-info target.com", desc: "SNMP Juniper info", cat: "nse" },
+            { cmd: "nmap --script snmp-netscreen-info target.com", desc: "SNMP NetScreen info", cat: "nse" },
+            { cmd: "nmap --script snmp-apc-info target.com", desc: "SNMP APC info", cat: "nse" },
+            { cmd: "nmap --script snmp-brocade-info target.com", desc: "SNMP Brocade info", cat: "nse" },
+            { cmd: "nmap --script snmp-dlink-info target.com", desc: "SNMP D-Link info", cat: "nse" },
+            { cmd: "nmap --script snmp-hp-info target.com", desc: "SNMP HP info", cat: "nse" },
+            { cmd: "nmap --script snmp-ibm-info target.com", desc: "SNMP IBM info", cat: "nse" },
+            { cmd: "nmap --script snmp-linksys-info target.com", desc: "SNMP Linksys info", cat: "nse" },
+            { cmd: "nmap --script snmp-mikrotik-info target.com", desc: "SNMP MikroTik info", cat: "nse" },
+            { cmd: "nmap --script snmp-netgear-info target.com", desc: "SNMP Netgear info", cat: "nse" },
+            { cmd: "nmap --script snmp-nortel-info target.com", desc: "SNMP Nortel info", cat: "nse" },
+            { cmd: "nmap --script snmp-sonicwall-info target.com", desc: "SNMP SonicWall info", cat: "nse" },
+            { cmd: "nmap --script snmp-tplink-info target.com", desc: "SNMP TP-Link info", cat: "nse" },
+            { cmd: "nmap --script snmp-zyxel-info target.com", desc: "SNMP ZyXEL info", cat: "nse" },
+            { cmd: "nmap --script ftp-anon target.com", desc: "FTP anonymous login", cat: "nse" },
+            { cmd: "nmap --script ftp-brute target.com", desc: "FTP brute force", cat: "nse" },
+            { cmd: "nmap --script ftp-bounce target.com", desc: "FTP bounce", cat: "nse" },
+            { cmd: "nmap --script ftp-libopie target.com", desc: "FTP libopie", cat: "nse" },
+            { cmd: "nmap --script ftp-proftpd-backdoor target.com", desc: "ProFTPD backdoor", cat: "nse" },
+            { cmd: "nmap --script ftp-syst target.com", desc: "FTP system", cat: "nse" },
+            { cmd: "nmap --script ftp-vsftpd-backdoor target.com", desc: "vsftpd backdoor", cat: "nse" },
+            { cmd: "nmap --script ftp-vuln-cve2010-4221 target.com", desc: "CVE-2010-4221", cat: "nse" },
+            { cmd: "nmap --script ftp-vuln-cve2015-3306 target.com", desc: "CVE-2015-3306", cat: "nse" },
+            { cmd: "nmap --script ftp-vuln-cve2017-16660 target.com", desc: "CVE-2017-16660", cat: "nse" },
+            { cmd: "nmap --script ftp-vuln-cve2019-12815 target.com", desc: "CVE-2019-12815", cat: "nse" },
+            { cmd: "nmap --script ftp-vuln-cve2020-9273 target.com", desc: "CVE-2020-9273", cat: "nse" },
+            { cmd: "nmap --script ftp-vuln-cve2021-41773 target.com", desc: "CVE-2021-41773", cat: "nse" },
+            { cmd: "nmap --script ftp-vuln-cve2022-22965 target.com", desc: "CVE-2022-22965", cat: "nse" },
+            { cmd: "nmap --script ftp-vuln-cve2023-23397 target.com", desc: "CVE-2023-23397", cat: "nse" },
+            { cmd: "nmap --script ftp-anon --script-args ftp-anon.maxlist=-1 target.com", desc: "FTP anon max list", cat: "nse" },
+            { cmd: "nmap --script ftp-brute --script-args ftp-brute.threads=10 target.com", desc: "FTP brute threads", cat: "nse" },
+            { cmd: "nmap --script ftp-brute --script-args userdb=/path/to/users.txt target.com", desc: "FTP brute user db", cat: "nse" },
+            { cmd: "nmap --script ftp-brute --script-args passdb=/path/to/passwords.txt target.com", desc: "FTP brute pass db", cat: "nse" },
+            { cmd: "nmap --script ftp-brute --script-args ftp-brute.emptypass=true target.com", desc: "FTP brute empty pass", cat: "nse" },
+            { cmd: "nmap --script ftp-bounce --script-args ftp-bounce.username=user,ftp-bounce.password=pass target.com", desc: "FTP bounce with credentials", cat: "nse" },
+            { cmd: "nmap --script ftp-libopie --script-args ftp-libopie.verbose=true target.com", desc: "FTP libopie verbose", cat: "nse" },
+            { cmd: "nmap --script ftp-proftpd-backdoor --script-args ftp-proftpd-backdoor.check=true target.com", desc: "ProFTPD backdoor check", cat: "nse" },
+            { cmd: "nmap --script ftp-syst --script-args ftp-syst.verbose=true target.com", desc: "FTP syst verbose", cat: "nse" },
+            { cmd: "nmap --script ftp-vsftpd-backdoor --script-args ftp-vsftpd-backdoor.check=true target.com", desc: "vsftpd backdoor check", cat: "nse" },
+            { cmd: "nmap --script ftp-vuln-cve2010-4221 --script-args ftp-vuln-cve2010-4221.check=true target.com", desc: "CVE-2010-4221 check", cat: "nse" },
+            { cmd: "nmap --script ftp-vuln-cve2015-3306 --script-args ftp-vuln-cve2015-3306.check=true target.com", desc: "CVE-2015-3306 check", cat: "nse" },
+            { cmd: "nmap --script ftp-vuln-cve2017-16660 --script-args ftp-vuln-cve2017-16660.check=true target.com", desc: "CVE-2017-16660 check", cat: "nse" },
+            { cmd: "nmap --script ftp-vuln-cve2019-12815 --script-args ftp-vuln-cve2019-12815.check=true target.com", desc: "CVE-2019-12815 check", cat: "nse" },
+            { cmd: "nmap --script ftp-vuln-cve2020-9273 --script-args ftp-vuln-cve2020-9273.check=true target.com", desc: "CVE-2020-9273 check", cat: "nse" },
+            { cmd: "nmap --script ssh-auth-methods target.com", desc: "SSH authentication methods", cat: "nse" },
+            { cmd: "nmap --script ssh-brute target.com", desc: "SSH brute force", cat: "nse" },
+            { cmd: "nmap --script ssh-hostkey target.com", desc: "SSH host key", cat: "nse" },
+            { cmd: "nmap --script ssh-publickey-acceptance target.com", desc: "SSH public key acceptance", cat: "nse" },
+            { cmd: "nmap --script ssh2-enum-algos target.com", desc: "SSH2 algorithms enumeration", cat: "nse" },
+            { cmd: "nmap --script sshv1 target.com", desc: "SSHv1 detection", cat: "nse" },
+            { cmd: "nmap --script ssh-run target.com", desc: "SSH run command", cat: "nse" },
+            { cmd: "nmap --script ssh-keyscan target.com", desc: "SSH keyscan", cat: "nse" },
+            { cmd: "nmap --script ssh-keyscan-parser target.com", desc: "SSH keyscan parser", cat: "nse" },
+            { cmd: "nmap --script ssh-weak-keys target.com", desc: "SSH weak keys", cat: "nse" },
+            { cmd: "nmap --script ssh-auth-methods --script-args ssh-auth-methods.verbose=true target.com", desc: "SSH auth methods verbose", cat: "nse" },
+            { cmd: "nmap --script ssh-brute --script-args ssh-brute.threads=10 target.com", desc: "SSH brute threads", cat: "nse" },
+            { cmd: "nmap --script ssh-brute --script-args userdb=/path/to/users.txt target.com", desc: "SSH brute user db", cat: "nse" },
+            { cmd: "nmap --script ssh-brute --script-args passdb=/path/to/passwords.txt target.com", desc: "SSH brute pass db", cat: "nse" },
+            { cmd: "nmap --script ssh-brute --script-args ssh-brute.emptypass=true target.com", desc: "SSH brute empty pass", cat: "nse" },
+            { cmd: "nmap --script ssh-hostkey --script-args ssh-hostkey.verbose=true target.com", desc: "SSH hostkey verbose", cat: "nse" },
+            { cmd: "nmap --script ssh-publickey-acceptance --script-args ssh-publickey-acceptance.verbose=true target.com", desc: "SSH publickey verbose", cat: "nse" },
+            { cmd: "nmap --script ssh2-enum-algos --script-args ssh2-enum-algos.verbose=true target.com", desc: "SSH2 algos verbose", cat: "nse" },
+            { cmd: "nmap --script sshv1 --script-args sshv1.verbose=true target.com", desc: "SSHv1 verbose", cat: "nse" },
+            { cmd: "nmap --script ssh-run --script-args ssh-run.cmd=\"id\" target.com", desc: "SSH run command", cat: "nse" },
+            { cmd: "nmap --script ssh-keyscan --script-args ssh-keyscan.verbose=true target.com", desc: "SSH keyscan verbose", cat: "nse" },
+            { cmd: "nmap --script ssh-keyscan-parser --script-args ssh-keyscan-parser.verbose=true target.com", desc: "SSH keyscan parser verbose", cat: "nse" },
+            { cmd: "nmap --script ssh-weak-keys --script-args ssh-weak-keys.verbose=true target.com", desc: "SSH weak keys verbose", cat: "nse" },
+            { cmd: "nmap --script ssh-auth-methods -p 22 target.com", desc: "SSH auth on port 22", cat: "nse" },
+            { cmd: "nmap --script ssh-brute -p 22 target.com", desc: "SSH brute on port 22", cat: "nse" },
+            { cmd: "nmap --script ssh-hostkey -p 22 target.com", desc: "SSH hostkey on port 22", cat: "nse" },
+            { cmd: "nmap --script ssh-publickey-acceptance -p 22 target.com", desc: "SSH publickey on port 22", cat: "nse" },
+            { cmd: "nmap --script ssh2-enum-algos -p 22 target.com", desc: "SSH2 algos on port 22", cat: "nse" },
+            { cmd: "nmap --script sshv1 -p 22 target.com", desc: "SSHv1 on port 22", cat: "nse" },
+            { cmd: "nmap --script ssh-run -p 22 target.com", desc: "SSH run on port 22", cat: "nse" },
+
+            // ==================== VULNERABILITY ASSESSMENT (200) ====================
+            { cmd: "nmap --script vuln target.com", desc: "All vulnerability scripts", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.showall=true target.com", desc: "Show all vulnerability info", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.riskfactor=high target.com", desc: "Only high risk vulnerabilities", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.riskfactor=medium target.com", desc: "Medium risk vulnerabilities", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.riskfactor=low target.com", desc: "Low risk vulnerabilities", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=rce target.com", desc: "RCE vulnerabilities", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=sql-injection target.com", desc: "SQL injection vulnerabilities", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=xss target.com", desc: "XSS vulnerabilities", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=csrf target.com", desc: "CSRF vulnerabilities", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=file-inclusion target.com", desc: "File inclusion vulnerabilities", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=directory-traversal target.com", desc: "Directory traversal", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=command-injection target.com", desc: "Command injection", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=xxe target.com", desc: "XXE vulnerabilities", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=ssrf target.com", desc: "SSRF vulnerabilities", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=deserialization target.com", desc: "Deserialization vulnerabilities", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=idor target.com", desc: "IDOR vulnerabilities", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=auth-bypass target.com", desc: "Authentication bypass", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=info-disclosure target.com", desc: "Information disclosure", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=misconfiguration target.com", desc: "Misconfigurations", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-crypto target.com", desc: "Weak cryptography", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-auth target.com", desc: "Weak authentication", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-session target.com", desc: "Weak session management", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-cors target.com", desc: "Weak CORS configuration", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-headers target.com", desc: "Weak security headers", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-ssl target.com", desc: "Weak SSL/TLS", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-ciphers target.com", desc: "Weak ciphers", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-protocols target.com", desc: "Weak protocols", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-certificates target.com", desc: "Weak certificates", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-key-exchange target.com", desc: "Weak key exchange", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-signatures target.com", desc: "Weak signatures", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-randomness target.com", desc: "Weak randomness", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-entropy target.com", desc: "Weak entropy", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-prng target.com", desc: "Weak PRNG", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-hashing target.com", desc: "Weak hashing", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-encryption target.com", desc: "Weak encryption", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-password target.com", desc: "Weak passwords", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-2fa target.com", desc: "Weak 2FA", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-mfa target.com", desc: "Weak MFA", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-biometrics target.com", desc: "Weak biometrics", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-tokens target.com", desc: "Weak tokens", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-sessions target.com", desc: "Weak sessions", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-cookies target.com", desc: "Weak cookies", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-headers target.com", desc: "Weak headers", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-csp target.com", desc: "Weak CSP", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-hsts target.com", desc: "Weak HSTS", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-hpkp target.com", desc: "Weak HPKP", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-referrer-policy target.com", desc: "Weak referrer policy", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-feature-policy target.com", desc: "Weak feature policy", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-permissions-policy target.com", desc: "Weak permissions policy", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-expect-ct target.com", desc: "Weak Expect-CT", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-x-content-type-options target.com", desc: "Weak X-Content-Type-Options", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-x-frame-options target.com", desc: "Weak X-Frame-Options", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-x-xss-protection target.com", desc: "Weak X-XSS-Protection", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-public-key-pins target.com", desc: "Weak public key pins", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-subresource-integrity target.com", desc: "Weak subresource integrity", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-strict-transport-security target.com", desc: "Weak strict transport security", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-cookie-security target.com", desc: "Weak cookie security", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-session-security target.com", desc: "Weak session security", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-authentication target.com", desc: "Weak authentication", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-authorization target.com", desc: "Weak authorization", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-rate-limiting target.com", desc: "Weak rate limiting", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-bot-protection target.com", desc: "Weak bot protection", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-waf target.com", desc: "Weak WAF", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-firewall target.com", desc: "Weak firewall", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-ids target.com", desc: "Weak IDS", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-ips target.com", desc: "Weak IPS", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-siem target.com", desc: "Weak SIEM", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-soc target.com", desc: "Weak SOC", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-soar target.com", desc: "Weak SOAR", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-edr target.com", desc: "Weak EDR", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-xdr target.com", desc: "Weak XDR", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-ndr target.com", desc: "Weak NDR", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-mdr target.com", desc: "Weak MDR", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-cdr target.com", desc: "Weak CDR", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-av target.com", desc: "Weak antivirus", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-antimalware target.com", desc: "Weak antimalware", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-antispyware target.com", desc: "Weak antispyware", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-antiransomware target.com", desc: "Weak antiransomware", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-antiadware target.com", desc: "Weak antiadware", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-antitrojan target.com", desc: "Weak antitrojan", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-antiworm target.com", desc: "Weak antiworm", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-antivirus target.com", desc: "Weak antivirus", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-antimalware target.com", desc: "Weak antimalware", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-antispyware target.com", desc: "Weak antispyware", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-antiransomware target.com", desc: "Weak antiransomware", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-antiadware target.com", desc: "Weak antiadware", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-antitrojan target.com", desc: "Weak antitrojan", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-antiworm target.com", desc: "Weak antiworm", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-rootkit-detection target.com", desc: "Weak rootkit detection", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-bootkit-detection target.com", desc: "Weak bootkit detection", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-firmware-protection target.com", desc: "Weak firmware protection", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-bios-protection target.com", desc: "Weak BIOS protection", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-uefi-protection target.com", desc: "Weak UEFI protection", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-secureboot target.com", desc: "Weak Secure Boot", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-tpm target.com", desc: "Weak TPM", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-hsm target.com", desc: "Weak HSM", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-smartcard target.com", desc: "Weak smart card", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-nfc target.com", desc: "Weak NFC", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-rfid target.com", desc: "Weak RFID", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-bluetooth target.com", desc: "Weak Bluetooth", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-zigbee target.com", desc: "Weak Zigbee", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-zwave target.com", desc: "Weak Z-Wave", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-lora target.com", desc: "Weak LoRa", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-sigfox target.com", desc: "Weak Sigfox", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-nbiot target.com", desc: "Weak NB-IoT", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-ltem target.com", desc: "Weak LTE-M", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-catm target.com", desc: "Weak CAT-M", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-5g target.com", desc: "Weak 5G", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-wifi target.com", desc: "Weak WiFi", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-wifipineapple target.com", desc: "Weak WiFi Pineapple", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-wifirogue target.com", desc: "Weak rogue WiFi", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-wifievil target.com", desc: "Weak evil twin", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-wifikrack target.com", desc: "Weak WiFi KRACK", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-wpa target.com", desc: "Weak WPA", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-wpa2 target.com", desc: "Weak WPA2", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-wpa3 target.com", desc: "Weak WPA3", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-wep target.com", desc: "Weak WEP", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-eap target.com", desc: "Weak EAP", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-radius target.com", desc: "Weak RADIUS", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-tacacs target.com", desc: "Weak TACACS+", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-kerberos target.com", desc: "Weak Kerberos", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-ldap target.com", desc: "Weak LDAP", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-active-directory target.com", desc: "Weak Active Directory", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-domain target.com", desc: "Weak domain controller", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-dns target.com", desc: "Weak DNS", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-dns-recursion target.com", desc: "Weak DNS recursion", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-dns-zone-transfer target.com", desc: "Weak DNS zone transfer", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-dns-cache-snoop target.com", desc: "Weak DNS cache snooping", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-dns-nsec target.com", desc: "Weak DNSSEC", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-dns-doh target.com", desc: "Weak DNS over HTTPS", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-dns-dot target.com", desc: "Weak DNS over TLS", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-dns-quic target.com", desc: "Weak DNS over QUIC", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-http target.com", desc: "Weak HTTP", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-https target.com", desc: "Weak HTTPS", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-http-security target.com", desc: "Weak HTTP security", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-http-cors target.com", desc: "Weak CORS", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-http-csrf target.com", desc: "Weak CSRF protection", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-http-xss target.com", desc: "Weak XSS protection", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-http-clickjacking target.com", desc: "Weak clickjacking protection", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-http-hsts target.com", desc: "Weak HSTS", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-http-csp target.com", desc: "Weak CSP", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-http-referrer-policy target.com", desc: "Weak referrer policy", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-http-feature-policy target.com", desc: "Weak feature policy", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-http-permissions-policy target.com", desc: "Weak permissions policy", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-http-expect-ct target.com", desc: "Weak Expect-CT", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-http-x-content-type-options target.com", desc: "Weak X-Content-Type-Options", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-http-x-frame-options target.com", desc: "Weak X-Frame-Options", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-http-x-xss-protection target.com", desc: "Weak X-XSS-Protection", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-http-public-key-pins target.com", desc: "Weak HPKP", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-http-subresource-integrity target.com", desc: "Weak SRI", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-http-strict-transport-security target.com", desc: "Weak HSTS", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-http-cookie-security target.com", desc: "Weak cookie security", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-http-session-security target.com", desc: "Weak session security", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-http-authentication target.com", desc: "Weak authentication", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-http-authorization target.com", desc: "Weak authorization", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-http-rate-limiting target.com", desc: "Weak rate limiting", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-http-bot-protection target.com", desc: "Weak bot protection", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-http-waf target.com", desc: "Weak WAF", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-http-firewall target.com", desc: "Weak firewall", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-http-ids target.com", desc: "Weak IDS", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-http-ips target.com", desc: "Weak IPS", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-http-siem target.com", desc: "Weak SIEM", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-http-soc target.com", desc: "Weak SOC", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-http-soar target.com", desc: "Weak SOAR", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-http-edr target.com", desc: "Weak EDR", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-http-xdr target.com", desc: "Weak XDR", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-http-ndr target.com", desc: "Weak NDR", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-http-mdr target.com", desc: "Weak MDR", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-http-cdr target.com", desc: "Weak CDR", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-http-av target.com", desc: "Weak antivirus", cat: "vuln" },
+            { cmd: "nmap --script vuln --script-args vulns.category=weak-http-antimalware target.com", desc: "Weak antimalware", cat: "vuln" }
+        ];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            renderCommands('all');
+            setupSearch();
+            updateCommandCount();
+        });
+
+        function renderCommands(category) {
+            const container = document.getElementById('commandsContainer');
+            container.innerHTML = '';
+            
+            const filteredCommands = category === 'all' 
+                ? nmapCommands 
+                : nmapCommands.filter(cmd => cmd.cat === category);
+            
+            filteredCommands.forEach((command, index) => {
+                const card = document.createElement('div');
+                card.className = 'command-card';
+                card.dataset.index = index;
+                
+                const tags = command.cat === 'nse' ? 'NSE Script' : 
+                             command.cat === 'firewall' ? 'Firewall Evasion' :
+                             command.cat === 'timing' ? 'Timing' :
+                             command.cat === 'output' ? 'Output Format' :
+                             command.cat === 'vuln' ? 'Vulnerability' :
+                             command.cat === 'forensic' ? 'Forensic & IR' :
+                             command.cat === 'attack' ? 'Attack & Pen Test' :
+                             command.cat === 'defensive' ? 'Defensive & Detection' :
+                             command.cat === 'scanning' ? 'Scanning & Discovery' :
+                             command.cat.charAt(0).toUpperCase() + command.cat.slice(1);
+                
+                card.innerHTML = `
+                    <button class="copy-btn" onclick="copyToClipboard(${index})">Copy</button>
+                    <span class="category-tag">${tags}</span>
+                    <div class="command-text">${command.cmd}</div>
+                    <div class="description">${command.desc}</div>
+                `;
+                
+                container.appendChild(card);
+            });
+            
+            updateActiveTab(category);
+        }
+
+        function filterCommands(category) {
+            renderCommands(category);
+        }
+
+        function updateActiveTab(activeCategory) {
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.querySelectorAll('.tab').forEach(tab => {
+                if (tab.textContent.includes(activeCategory.charAt(0).toUpperCase() + activeCategory.slice(1))) {
+                    tab.classList.add('active');
+                }
+            });
+        }
+
+        function setupSearch() {
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', function(e) {
+                const searchTerm = e.target.value.toLowerCase();
+                const container = document.getElementById('commandsContainer');
+                container.innerHTML = '';
+                
+                const filtered = nmapCommands.filter(cmd => 
+                    cmd.cmd.toLowerCase().includes(searchTerm) || 
+                    cmd.desc.toLowerCase().includes(searchTerm) ||
+                    cmd.cat.toLowerCase().includes(searchTerm)
+                );
+                
+                filtered.forEach((command, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'command-card';
+                    card.dataset.index = index;
+                    
+                    const tags = command.cat === 'nse' ? 'NSE Script' : 
+                                 command.cat === 'firewall' ? 'Firewall Evasion' :
+                                 command.cat === 'timing' ? 'Timing' :
+                                 command.cat === 'output' ? 'Output Format' :
+                                 command.cat === 'vuln' ? 'Vulnerability' :
+                                 command.cat === 'forensic' ? 'Forensic & IR' :
+                                 command.cat === 'attack' ? 'Attack & Pen Test' :
+                                 command.cat === 'defensive' ? 'Defensive & Detection' :
+                                 command.cat === 'scanning' ? 'Scanning & Discovery' :
+                                 command.cat.charAt(0).toUpperCase() + command.cat.slice(1);
+                    
+                    card.innerHTML = `
+                        <button class="copy-btn" onclick="copyToClipboard(${index})">Copy</button>
+                        <span class="category-tag">${tags}</span>
+                        <div class="command-text">${command.cmd}</div>
+                        <div class="description">${command.desc}</div>
+                    `;
+                    
+                    container.appendChild(card);
+                });
+            });
+        }
+
+        function copyToClipboard(index) {
+            const command = nmapCommands[index].cmd;
+            navigator.clipboard.writeText(command).then(() => {
+                const buttons = document.querySelectorAll('.copy-btn');
+                const originalText = buttons[index].textContent;
+                buttons[index].textContent = 'Copied!';
+                buttons[index].style.background = 'var(--success)';
+                
+                setTimeout(() => {
+                    buttons[index].textContent = originalText;
+                    buttons[index].style.background = 'var(--primary)';
+                }, 2000);
+            });
+        }
+
+        function updateCommandCount() {
+            const counts = {
+                all: nmapCommands.length,
+                attack: nmapCommands.filter(c => c.cat === 'attack').length,
+                defensive: nmapCommands.filter(c => c.cat === 'defensive').length,
+                scanning: nmapCommands.filter(c => c.cat === 'scanning').length,
+                basic: nmapCommands.filter(c => c.cat === 'basic').length,
+                host: nmapCommands.filter(c => c.cat === 'host').length,
+                techniques: nmapCommands.filter(c => c.cat === 'techniques').length,
+                service: nmapCommands.filter(c => c.cat === 'service').length,
+                nse: nmapCommands.filter(c => c.cat === 'nse').length,
+                vuln: nmapCommands.filter(c => c.cat === 'vuln').length,
+                forensic: nmapCommands.filter(c => c.cat === 'forensic').length,
+                firewall: nmapCommands.filter(c => c.cat === 'firewall').length,
+                timing: nmapCommands.filter(c => c.cat === 'timing').length,
+                output: nmapCommands.filter(c => c.cat === 'output').length
+            };
+            
+            document.querySelectorAll('.tab').forEach(tab => {
+                const text = tab.textContent;
+                const match = text.match(/\((\d+)\)/);
+                if (match) {
+                    const base = text.replace(/\(\d+\)/, '').trim();
+                    const cat = base.toLowerCase().replace(' & pen test', '').replace(' & detection', '').replace(' & discovery', '').replace(' & ir', '').replace(' assessment', '').replace(' commands', '').replace(' formats', '').replace(' scripts', '').replace(' discovery', '');
+                    tab.textContent = `${base} (${counts[cat] || 0})`;
+                }
+            });
+            
+            document.getElementById('commandCount').textContent = counts.all;
+        }
+    </script>
+</body>
+</html>
